@@ -5,7 +5,7 @@ using System.Runtime.CompilerServices;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
-namespace Logical;
+namespace Engine;
 
 public class ButtonEventArgs : EventArgs
 {
@@ -35,6 +35,8 @@ public static class Input
     #endregion
 
     #region Properties
+    public static bool ShowCursor { get; set; }
+    public static Point MousePoint { get; set; }
     private static bool LeftButton { set => CheckInput(ref _leftButton, value); }
     private static bool MiddleButton { set => CheckInput(ref _middleButton, value); }
     private static bool RightButton { set => CheckInput(ref _rightButton, value); }

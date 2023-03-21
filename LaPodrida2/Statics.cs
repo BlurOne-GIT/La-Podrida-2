@@ -7,72 +7,26 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Logical;
+namespace LaPodrida2;
 
 public static class Statics
 {
     #region Fields
-    public const string standardSet = @".\alf.dat";
-    public static readonly byte[] VerticalAttachables = {
-        0x01,
-        0x03,
-        0x04,
-        0x06,
-        0x07,
-        0x09,
-        0x0A,
-        0x0C,
-        0x0D,
-        0x0E,
-        0x0F,
-        0x10,
-        0x11,
-        0x16
-    };
-    public static readonly byte[] HorizontalAttachables = {
-        0x01,
-        0x02,
-        0x04,
-        0x05,
-        0x07,
-        0x08,
-        0x0A,
-        0x0B,
-        0x0D,
-        0x0E,
-        0x0F,
-        0x10,
-        0x11
-    };
     #endregion
 
     #region Properties
-    public static string Set { get; set; } = standardSet;
     public static SpriteFont TextureFont { get; private set; }
     public static SpriteFont BoldFont { get; private set; }
     public static SpriteFont LightFont { get; private set; }
-    public static int Lives { get; set; }
-    public static bool ShowCursor { get; set; }
     public static bool WindowFocused { get; set; }
-    public static Point MousePoint { get; set; }
     public static float Opacity { get; set; } = 1;
     public static ContentManager Content { get; private set;}
     public static Vector2 DetectionPoint { get; } = new Vector2(13f);
-    public static Random Brandom = new Random();
-    public static Dictionary<Direction, Direction> ReverseDirection = new Dictionary<Direction, Direction>(4)
-    {
-        {Direction.Left, Direction.Right},
-        {Direction.Up, Direction.Down},
-        {Direction.Right, Direction.Left},
-        {Direction.Down, Direction.Up}
-    };
     #endregion
 
     #region Methods
-    public static void Initialize(ContentManager content)
-    {
-        Content = content;
-    }
+    public static void Initialize(ContentManager content) => Content = content;
+    
     public static void LoadFonts()
     {
         Texture2D fontTexture = Content.Load<Texture2D>("Fonts");
@@ -188,21 +142,6 @@ public static class Statics
     public static void Focus(object s, EventArgs e) => WindowFocused = true;
     public static void UnFocus(object s, EventArgs e) => WindowFocused = false;
     #endregion
-}
-
-public enum BallColors{
-    Pink,
-    Yellow,
-    Blue,
-    Green
-}
-
-public enum Direction
-{
-    Left,
-    Up,
-    Right,
-    Down
 }
 
 public static class LevelTextures
