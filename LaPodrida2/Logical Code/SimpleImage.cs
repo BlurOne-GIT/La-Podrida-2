@@ -2,9 +2,9 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Logical;
+namespace Engine;
 
-public class SimpleImage : Component
+public class SimpleImage : DrawableGameComponent
 {
     public SimpleImage(Texture2D texture, Vector2 position, int layer, bool enable = true)
     {
