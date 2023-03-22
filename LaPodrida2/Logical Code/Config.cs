@@ -2,7 +2,7 @@ using System;
 using System.IO;
 using System.Runtime.CompilerServices;
 
-namespace Logical;
+namespace Engine;
 
 public static class Configs
 {

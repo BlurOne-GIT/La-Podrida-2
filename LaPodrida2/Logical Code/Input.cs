@@ -68,7 +68,7 @@ public static class Input
             return;
         
         button = value;
-        if (!Statics.WindowFocused || Statics.MousePoint.X < 0 || Statics.MousePoint.Y < 0 || Statics.MousePoint.X > Configs.Width || Statics.MousePoint.Y > Configs.Height)
+        if (!Statics.WindowFocused || MousePoint.X < 0 || MousePoint.Y < 0 || MousePoint.X > Configs.Width || MousePoint.Y > Configs.Height)
             return;
         if (value)
             ButtonDown?.Invoke(null, new ButtonEventArgs(name, _position));

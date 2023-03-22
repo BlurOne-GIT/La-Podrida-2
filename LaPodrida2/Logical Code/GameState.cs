@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Logical;
+namespace Engine;
 
 public abstract class GameState : IDisposable
 {
@@ -19,10 +19,10 @@ public abstract class GameState : IDisposable
     {
         Input.KeyDown -= HandleInput;
         Input.ButtonDown -= HandleInput;
-        foreach (Component gameObject in _gameObjects)
+        foreach (GameComponent gameObject in _components)
             gameObject.Dispose();
     }
-    private readonly List<Component> _gameObjects = new List<Component>();
+    protected readonly GameComponentCollection _components = new GameComponentCollection();
     public abstract void LoadContent(ContentManager Content);
     public abstract void UnloadContent(ContentManager Content);
     public abstract void HandleInput(object s, ButtonEventArgs e);
@@ -32,38 +32,17 @@ public abstract class GameState : IDisposable
     {
         OnStateSwitched?.Invoke(this, gameState);
     }
-    public event EventHandler<GameEvents> OnEventNotification;
-    protected void NotifyEvent(GameEvents eventType, object argument = null)
-    {
-        OnEventNotification?.Invoke(this, eventType);
-
-        foreach (Component gameObject in _gameObjects)
-        {
-            gameObject.OnNotify(eventType);
-        }
-    }
-    protected void AddGameObject(Component gameObject)
-    {
-        _gameObjects.Add(gameObject);
-    }
-    protected void RemoveGameObject(Component gameObject)
-    {
-        _gameObjects.Remove(gameObject);
-    }
     public virtual void Update(GameTime gameTime)
     {
-        foreach (Component gameObject in _gameObjects.ToArray())
-        {
-            if (gameObject is IUpdateable && gameObject.IsEnabled)
-                (gameObject as IUpdateable).Update(gameTime);
-        }
+        foreach (GameComponent gameObject in _components.OrderBy(a => (a as GameComponent).UpdateOrder))
+            if (gameObject.Enabled) gameObject.Update(gameTime);
     }
-    public void Render(SpriteBatch _spriteBatch)
+    public void Draw(GameTime gameTime)
     {
-        foreach (Component gameObject in _gameObjects.OrderBy(a => a.zIndex))
+        foreach (DrawableGameComponent gameObject in _components.TakeWhile(a => a is DrawableGameComponent).OrderBy(a => (a as DrawableGameComponent).DrawOrder))
         {
-            if (gameObject.IsEnabled)
-                gameObject.Render(_spriteBatch);
+            if (gameObject.Visible)
+                gameObject.Draw(gameTime);
         }
     }
  }
