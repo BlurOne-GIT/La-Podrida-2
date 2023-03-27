@@ -38,7 +38,7 @@ public class TutorialState : GameState
     {
         #region SimpleImages
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
-        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 1.25f);
+        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 2f);
         deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_blue"), new Vector2(200f, -200f), 5);
         for (int i = 0; i < 3; i++)
         {
@@ -152,19 +152,26 @@ public class TutorialState : GameState
         }
 
         deck.Visible = false;
+        await Task.Delay(500);
         MediaPlayer.Play(bgm);
+        ElectroHandOut();
     }
 
     private async void ElectroHandOut()
     {
-        for (int i = -1; i < 2; i++)
+        for (int i = 0; i < 3; i++)
         {
             yourImages[i].Visible = true;
             while (yourImages[i].Position.Y < 550)
-                yourImages[i].Position += new Vector2(2 * i, -5f);
+            {
+                yourImages[i].Position += new Vector2(4 * (i-1), 10f);
+                await Task.Delay(17);
+            }
             electroCardImages[i].Visible = true;
-            while (electroCardImages[i].Position.Y < 400)
-                electroCardImages[i].Position += new Vector2(5 * i, -5f);
+            while (electroCardImages[i].Position.Y < 400) {
+                electroCardImages[i].Position += new Vector2(10 * (i-1), 10f);
+                await Task.Delay(17);
+            }
         }
     }
 }
