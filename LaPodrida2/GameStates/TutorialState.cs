@@ -21,11 +21,12 @@ public class TutorialState : GameState
     private SoundEffect vo4; // "Yes, this is my house and this is my table!"
     private SoundEffect vo5; // "If you don't like the stock logo you can leave!"
     private CardData[] electroCards = new CardData[3];
-    private SimpleImage[] electroImages = new SimpleImage[3];
+    private SimpleImage[] electroCardImages = new SimpleImage[3];
     private CardData[] goldenCards = new CardData[3];
     private SimpleImage[] goldenImages = new SimpleImage[3];
     private CardData[] yourCards = new CardData[3];
     private SimpleImage[] yourImages = new SimpleImage[3];
+    private int roundCount = 0;
     private Song bgm;
     private SimpleImage oscilatingOpacityImageReference;
     private bool goingUp = false;
@@ -39,6 +40,16 @@ public class TutorialState : GameState
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
         table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 1.25f);
         deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_blue"), new Vector2(200f, -200f), 5);
+        for (int i = 0; i < 3; i++)
+        {
+            electroCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 290f), 7, false);
+            goldenImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 290f), 7, false);
+            yourImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 290f), 7, false);
+            _components.Add(electroCardImages[i]);
+            _components.Add(goldenImages[i]);
+            _components.Add(yourImages[i]);
+        }
+        
         _components.Add(bg);
         _components.Add(table);
         _components.Add(deck);
@@ -146,6 +157,14 @@ public class TutorialState : GameState
 
     private async void ElectroHandOut()
     {
-        
+        for (int i = -1; i < 2; i++)
+        {
+            yourImages[i].Visible = true;
+            while (yourImages[i].Position.Y < 550)
+                yourImages[i].Position += new Vector2(2 * i, -5f);
+            electroCardImages[i].Visible = true;
+            while (electroCardImages[i].Position.Y < 400)
+                electroCardImages[i].Position += new Vector2(5 * i, -5f);
+        }
     }
 }
