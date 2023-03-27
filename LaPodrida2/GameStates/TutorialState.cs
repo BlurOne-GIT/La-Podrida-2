@@ -13,12 +13,20 @@ public class TutorialState : GameState
 {
     private SimpleImage bg;
     private SimpleImage table;
+    private SimpleImage deck;
     private TextComponent ccText;
     private SoundEffect vo1; // "What do you mean you don't know how to play?"
     private SoundEffect vo2; // "The tournament starts in an hour..."
     private SoundEffect vo3; // "I guess there's time, I'll give you a little tutorial."
     private SoundEffect vo4; // "Yes, this is my house and this is my table!"
     private SoundEffect vo5; // "If you don't like the stock logo you can leave!"
+    private CardData[] electroCards = new CardData[3];
+    private SimpleImage[] electroImages = new SimpleImage[3];
+    private CardData[] goldenCards = new CardData[3];
+    private SimpleImage[] goldenImages = new SimpleImage[3];
+    private CardData[] yourCards = new CardData[3];
+    private SimpleImage[] yourImages = new SimpleImage[3];
+    private Song bgm;
     private SimpleImage oscilatingOpacityImageReference;
     private bool goingUp = false;
 
@@ -30,8 +38,10 @@ public class TutorialState : GameState
         #region SimpleImages
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
         table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 1.25f);
+        deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_blue"), new Vector2(200f, -200f), 5);
         _components.Add(bg);
         _components.Add(table);
+        _components.Add(deck);
         #endregion
 
         #region Audios
@@ -40,6 +50,7 @@ public class TutorialState : GameState
         vo3 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo3");
         vo4 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo4");
         vo5 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo5");
+        bgm = Game.Content.Load<Song>(@"Audio\Tutorial\bgm");
         #endregion
 
         #region TextComponents
@@ -115,6 +126,26 @@ public class TutorialState : GameState
         await Task.Delay(vo5.Duration);
         ccText.Text = "";
 
-        oscilatingOpacityImageReference = table;
+        while (deck.Position.Y < 450)
+        {
+            deck.Position += new Vector2(0f, 25f);
+            await Task.Delay(17);
+        }
+
+        await Task.Delay(500);
+
+        while (deck.Position.X < 400)
+        {
+            deck.Position += new Vector2(5f, -4f);
+            await Task.Delay(17);
+        }
+
+        deck.Visible = false;
+        MediaPlayer.Play(bgm);
+    }
+
+    private async void ElectroHandOut()
+    {
+        
     }
 }
