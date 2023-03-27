@@ -1,6 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using System;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
+using Engine;
 
 namespace LaPodrida2;
 
@@ -8,32 +12,52 @@ public class Game1 : Game
 {
     private GraphicsDeviceManager _graphics;
     private SpriteBatch _spriteBatch;
+    private GameState _currentGameState;
 
     public Game1()
     {
         _graphics = new GraphicsDeviceManager(this);
         Content.RootDirectory = "Content";
         IsMouseVisible = true;
+        Window.AllowAltF4 = true;
+        Window.AllowUserResizing = false;
+        _graphics.PreferredBackBufferWidth = 800;
+        _graphics.PreferredBackBufferHeight = 800;
     }
 
+    #region Framework Methods
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
 
         base.Initialize();
+        Window.KeyDown += UpdateInputs;
+        Window.KeyUp += UpdateInputs;
+
+        Activated += Statics.Focus;
+        Deactivated += Statics.UnFocus;
+        Statics.Focus(null, null);
     }
 
     protected override void LoadContent()
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
+        Services.AddService<SpriteBatch>(_spriteBatch);
+        Configs.Initialize();
+        MediaPlayer.Volume = MathF.Pow((float)Configs.MusicVolume * 0.1f, 2);
+        SoundEffect.MasterVolume = MathF.Pow((float)Configs.SfxVolume * 0.1f, 2);
+        Configs.MusicVolumeChanged += (s, e) => MediaPlayer.Volume = MathF.Pow((float)Configs.MusicVolume * 0.1f, 2);
+        Configs.SfxVolumeChaged += (s, e) => SoundEffect.MasterVolume = MathF.Pow((float)Configs.SfxVolume * 0.1f, 2);
 
         // TODO: use this.Content to load your game content here
+        SwitchGameState(new MenuState(this));
     }
 
     protected override void Update(GameTime gameTime)
     {
-        if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-            Exit();
+        Input.UpdateInputs(Mouse.GetState());
+        Input.MousePoint = Mouse.GetState().Position;
+        _currentGameState.Update(gameTime);
 
         // TODO: Add your update logic here
 
@@ -42,10 +66,47 @@ public class Game1 : Game
 
     protected override void Draw(GameTime gameTime)
     {
-        GraphicsDevice.Clear(Color.CornflowerBlue);
+        GraphicsDevice.Clear(Color.Black);
 
         // TODO: Add your drawing code here
+        _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+        _currentGameState.Draw(gameTime);
+        _spriteBatch.End();
 
         base.Draw(gameTime);
     }
+
+    protected override void OnExiting(object sender, EventArgs args)
+    {
+        Configs.CloseFile();
+        base.OnExiting(sender, args);
+    }
+    #endregion
+
+    #region Custom Methods
+    private void SwitchGameState(GameState newGameState)
+    {
+        if (_currentGameState is not null)
+        {
+            _currentGameState.OnStateSwitched -= OnStateSwitched;
+            _currentGameState.UnloadContent();
+            _currentGameState.Dispose();
+        }
+
+        _currentGameState = newGameState;
+
+        _currentGameState.LoadContent();
+        _currentGameState.Initialize();
+
+        _currentGameState.OnStateSwitched += OnStateSwitched;
+    }
+
+    private void OnStateSwitched(object s, GameState e) => SwitchGameState(e);
+
+    private void UpdateInputs(object s, InputKeyEventArgs e) => Input.UpdateInputs(Keyboard.GetState());
+
+    private void UpdateVolume(object s, EventArgs e) {MediaPlayer.Volume = MathF.Pow((float)Configs.MusicVolume * 0.1f, 2); MediaPlayer.IsMuted = muter(Configs.MusicVolume);}
+    
+    private Func<int, bool> muter = x => x == 0;
+    #endregion
 }

@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "a:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj": {}
+    "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj": {}
   },
   "projects": {
-    "a:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj": {
+    "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "a:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
+        "projectUniqueName": "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
         "projectName": "LaPodrida2",
-        "projectPath": "a:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
+        "projectPath": "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
         "packagesPath": "C:\\Users\\bluro\\.nuget\\packages\\",
-        "outputPath": "a:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\obj\\",
+        "outputPath": "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\bluro\\AppData\\Roaming\\NuGet\\NuGet.Config",

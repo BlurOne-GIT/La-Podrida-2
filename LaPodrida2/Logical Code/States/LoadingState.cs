@@ -1,4 +1,4 @@
-using System;
+/*using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
@@ -94,7 +94,7 @@ public class LoadingState : GameState
         Texture2D pinkBall = Content.Load<Texture2D>("SpinnerBallPink");
         for (int i = 0; i < Configs.Lives; i++)
             AddGameObject(new SimpleImage(pinkBall, new Vector2(72 + 12 * i, 82), 1));
-        AddGameObject(new TextComponent(Statics.LightFont, new Vector2(16, 123), Color.White, $"{Configs.Stage:00} {/*Statics.LevelPassword*/ new Lexer().GetLevelName(Configs.Stage)}", 1));
+        AddGameObject(new TextComponent(Statics.LightFont, new Vector2(16, 123), Color.White, $"{Configs.Stage:00} {/*Statics.LevelPassword\*\/ new Lexer().GetLevelName(Configs.Stage)}", 1));
         if (mode is not 0)
         {
             // TODO: Implement changingDisplay with displayMessages
@@ -107,7 +107,7 @@ public class LoadingState : GameState
                 AddGameObject(bonusMessage);
             }
         }
-        AddGameObject(new TextComponent(Statics.BoldFont/*DEBUG TextureFont*/, new Vector2(209, 188), Color.White, $"{Configs.Score:000000}", 1));
+        AddGameObject(new TextComponent(Statics.BoldFont/*DEBUG TextureFont\*\/, new Vector2(209, 188), Color.White, $"{Configs.Score:000000}", 1));
         FadeIn();
     }
 
@@ -178,4 +178,4 @@ public class LoadingState : GameState
         }
     }
     #endregion
-}
+}*/

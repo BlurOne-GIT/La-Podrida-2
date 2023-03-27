@@ -68,7 +68,7 @@ public static class Input
             return;
         
         button = value;
-        if (!Statics.WindowFocused || MousePoint.X < 0 || MousePoint.Y < 0 || MousePoint.X > Configs.Width || MousePoint.Y > Configs.Height)
+        if (!LaPodrida2.Statics.WindowFocused || MousePoint.X < 0 || MousePoint.Y < 0 || MousePoint.X > 800 || MousePoint.Y > 800)
             return;
         if (value)
             ButtonDown?.Invoke(null, new ButtonEventArgs(name, _position));
@@ -81,7 +81,7 @@ public static class Input
             return;
 
         _keys[i] = value;
-        if (!Statics.WindowFocused)
+        if (!LaPodrida2.Statics.WindowFocused)
             return;
         if (value)
             KeyDown?.Invoke(null, new InputKeyEventArgs((Keys)i));

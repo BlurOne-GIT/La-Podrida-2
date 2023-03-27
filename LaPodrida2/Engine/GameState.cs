@@ -8,41 +8,41 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Engine;
 
-public abstract class GameState : IDisposable
+public abstract class GameState : DrawableGameComponent
 {
-    public GameState()
+    public GameState(Game game) : base(game)
     {
         Input.KeyDown += HandleInput;
         Input.ButtonDown += HandleInput;
     }
-    public virtual void Dispose()
+    public new virtual void Dispose()
     {
         Input.KeyDown -= HandleInput;
         Input.ButtonDown -= HandleInput;
         foreach (GameComponent gameObject in _components)
             gameObject.Dispose();
+
+        base.Dispose();
     }
     protected readonly GameComponentCollection _components = new GameComponentCollection();
-    public abstract void LoadContent(ContentManager Content);
-    public abstract void UnloadContent(ContentManager Content);
-    public abstract void HandleInput(object s, ButtonEventArgs e);
-    public abstract void HandleInput(object s, InputKeyEventArgs e);
+    public virtual void HandleInput(object s, ButtonEventArgs e) {}
+    public virtual void HandleInput(object s, InputKeyEventArgs e) {}
     public event EventHandler<GameState> OnStateSwitched;
+    public new abstract void LoadContent();
+    public new abstract void UnloadContent();
     protected void SwitchState(GameState gameState)
     {
         OnStateSwitched?.Invoke(this, gameState);
     }
-    public virtual void Update(GameTime gameTime)
+    public override void Update(GameTime gameTime)
     {
         foreach (GameComponent gameObject in _components.OrderBy(a => (a as GameComponent).UpdateOrder))
             if (gameObject.Enabled) gameObject.Update(gameTime);
     }
-    public void Draw(GameTime gameTime)
+    public override void Draw(GameTime gameTime)
     {
-        foreach (DrawableGameComponent gameObject in _components.TakeWhile(a => a is DrawableGameComponent).OrderBy(a => (a as DrawableGameComponent).DrawOrder))
-        {
-            if (gameObject.Visible)
-                gameObject.Draw(gameTime);
-        }
+        var c = _components.Where(a => a is DrawableGameComponent && (a as DrawableGameComponent).Visible).OrderBy(a => (a as DrawableGameComponent).DrawOrder);
+        foreach (DrawableGameComponent gameObject in c)
+            gameObject.Draw(gameTime);
     }
  }

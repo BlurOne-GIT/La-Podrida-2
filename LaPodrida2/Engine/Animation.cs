@@ -10,34 +10,50 @@ public class Animation<T>
     #region Fields
     private T[] _frames;
     private int pos;
+    private int frameDelay;
     private bool isLooped;
+    private readonly int frameDuration;
     public bool Paused { get; set; } = false;
-    public bool IsFinished { get => _frames.Length - 1 == pos; }
     #endregion
 
-    public Animation(T[] frames, bool looped)
+    public Animation(T[] frames, bool looped, int frameDuration = 1)
     {
         _frames = frames;
         isLooped = looped;
         pos = _frames.Length - 1;
+        this.frameDuration = frameDuration - 1;
+        frameDelay = this.frameDuration;
     }
 
     public void Start() => pos = 0;
 
     public T NextFrame()
     {
-        if (IsFinished)
+        if (pos > _frames.Length - 1)
         {
             if (isLooped)
                 pos = 0;
             else
-                return _frames[pos];
+                return _frames[pos-1];
         }
+
+        if (frameDelay-- > 0)
+            return _frames[pos];
+
+        frameDelay = frameDuration;
 
         return _frames[Paused ? pos : pos++];
     }
 
-    public static Animation<Rectangle> TextureAnimation(Point frameSize, Point bounds, bool looped)
+    public T CurrentFrame() 
+    {   
+        if (pos < _frames.Length)
+            return _frames[pos];
+        else
+            return _frames[pos-1];
+    }
+
+    public static Animation<Rectangle> TextureAnimation(Point frameSize, Point bounds, bool looped, int frameDuration)
     {
         var frames = new List<Rectangle>();
         for (int y = 0; y < bounds.Y; y += frameSize.Y)
@@ -48,6 +64,6 @@ public class Animation<T>
             }
         }
 
-        return new Animation<Rectangle>(frames.ToArray(), looped);
+        return new Animation<Rectangle>(frames.ToArray(), looped, frameDuration);
     }
 }
