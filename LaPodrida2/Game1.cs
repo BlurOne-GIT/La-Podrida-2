@@ -44,10 +44,10 @@ public class Game1 : Game
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         Services.AddService<SpriteBatch>(_spriteBatch);
         Configs.Initialize();
-        MediaPlayer.Volume = MathF.Pow((float)Configs.MusicVolume * 0.1f, 2);
-        SoundEffect.MasterVolume = MathF.Pow((float)Configs.SfxVolume * 0.1f, 2);
-        Configs.MusicVolumeChanged += (s, e) => MediaPlayer.Volume = MathF.Pow((float)Configs.MusicVolume * 0.1f, 2);
-        Configs.SfxVolumeChaged += (s, e) => SoundEffect.MasterVolume = MathF.Pow((float)Configs.SfxVolume * 0.1f, 2);
+        UpdateMusicVolume(null, null);
+        UpdateSfxVolume(null, null);
+        Configs.MusicVolumeChanged += UpdateMusicVolume;
+        Configs.SfxVolumeChaged += UpdateSfxVolume;
 
         // TODO: use this.Content to load your game content here
         SwitchGameState(new MenuState(this));
@@ -105,8 +105,9 @@ public class Game1 : Game
 
     private void UpdateInputs(object s, InputKeyEventArgs e) => Input.UpdateInputs(Keyboard.GetState());
 
-    private void UpdateVolume(object s, EventArgs e) {MediaPlayer.Volume = MathF.Pow((float)Configs.MusicVolume * 0.1f, 2); MediaPlayer.IsMuted = muter(Configs.MusicVolume);}
-    
+    private void UpdateMusicVolume(object s, EventArgs e) {MediaPlayer.Volume = MathF.Pow((float)Configs.MusicVolume * 0.1f, 2); MediaPlayer.IsMuted = muter(Configs.MusicVolume);}
+    private void UpdateSfxVolume(object s, EventArgs e) {SoundEffect.MasterVolume = MathF.Pow((float)Configs.SfxVolume * 0.1f, 2); SoundEffect.MasterVolume = muter(Configs.SfxVolume) ? 0 : SoundEffect.MasterVolume;}
+
     private Func<int, bool> muter = x => x == 0;
     #endregion
 }

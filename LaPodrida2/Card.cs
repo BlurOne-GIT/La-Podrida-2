@@ -39,10 +39,10 @@ public struct CardData
             animations[Value - 1]
             );
     }
-    public static CardData CreateRandom(Random random, bool isGolden)
+    public static CardData CreateRandom(bool isGolden)
     {
-        var suit = (Suits)random.Next(0, 4);
-        var value = random.Next(1, 14);
+        var suit = (Suits)Random.Shared.Next(0, 4);
+        var value = Random.Shared.Next(1, 14);
         return new CardData(value, suit, isGolden);
     }
     private static Dictionary<string, Texture2D> textures;

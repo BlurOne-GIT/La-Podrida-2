@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
@@ -23,9 +24,9 @@ public class TutorialState : GameState
     private CardData[] electroCards = new CardData[3];
     private SimpleImage[] electroCardImages = new SimpleImage[3];
     private CardData[] goldenCards = new CardData[3];
-    private SimpleImage[] goldenImages = new SimpleImage[3];
+    private SimpleImage[] goldenCardImages = new SimpleImage[3];
     private CardData[] yourCards = new CardData[3];
-    private SimpleImage[] yourImages = new SimpleImage[3];
+    private SimpleImage[] yourCardImages = new SimpleImage[3];
     private int roundCount = 0;
     private Song bgm;
     private SimpleImage oscilatingOpacityImageReference;
@@ -38,16 +39,16 @@ public class TutorialState : GameState
     {
         #region SimpleImages
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
-        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 2f);
+        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 1.2f);
         deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_blue"), new Vector2(200f, -200f), 5);
         for (int i = 0; i < 3; i++)
         {
-            electroCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 290f), 7, false);
-            goldenImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 290f), 7, false);
-            yourImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 290f), 7, false);
+            electroCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 200f), 7, false);
+            goldenCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 200f), 7, false);
+            yourCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 200f), 7, false);
             _components.Add(electroCardImages[i]);
-            _components.Add(goldenImages[i]);
-            _components.Add(yourImages[i]);
+            _components.Add(goldenCardImages[i]);
+            _components.Add(yourCardImages[i]);
         }
         
         _components.Add(bg);
@@ -98,6 +99,22 @@ public class TutorialState : GameState
         base.Update(gameTime);
     }
 
+    public override void HandleInput(object s, InputKeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Microsoft.Xna.Framework.Input.Keys.Up:
+                table.Position += new Vector2(0, -5f);
+                ccText.Text = $"Y: {table.Position.Y}";
+                break;
+            case Microsoft.Xna.Framework.Input.Keys.Down:
+                table.Position += new Vector2(0, 5f);
+                ccText.Text = $"Y: {table.Position.Y}";
+                break;
+        }
+        base.HandleInput(s, e);
+    }
+
     public override void UnloadContent()
     {
         throw new NotImplementedException();
@@ -131,13 +148,14 @@ public class TutorialState : GameState
 
         vo4.Play();
         ccText.Text = "Yes, this is my house and this is my table!";
+        Game.Window.Title = "La Podrida 2 - Electro20's House";
         await Task.Delay(vo4.Duration);
         vo5.Play();
         ccText.Text = "If you don't like the stock logo you can leave!";
         await Task.Delay(vo5.Duration);
         ccText.Text = "";
 
-        while (deck.Position.Y < 450)
+        while (deck.Position.Y < 490)
         {
             deck.Position += new Vector2(0f, 25f);
             await Task.Delay(17);
@@ -147,13 +165,23 @@ public class TutorialState : GameState
 
         while (deck.Position.X < 400)
         {
-            deck.Position += new Vector2(5f, -4f);
+            deck.Position += new Vector2(5f, -5f);
+            table.Scale += 0.035f;
+            table.Position += new Vector2(0f, -2f);
+            await Task.Delay(17);
+        }
+        deck.Visible = false;
+
+        while (table.Position.Y > 340)
+        {
+            table.Position += new Vector2(0f, -2f);
             await Task.Delay(17);
         }
 
-        deck.Visible = false;
         await Task.Delay(500);
         MediaPlayer.Play(bgm);
+        Game.Window.Title = "La Podrida 2 - Tutorial";
+        ccText.Position = new Vector2(400f, 50f);
         ElectroHandOut();
     }
 
@@ -161,17 +189,69 @@ public class TutorialState : GameState
     {
         for (int i = 0; i < 3; i++)
         {
-            yourImages[i].Visible = true;
-            while (yourImages[i].Position.Y < 550)
+            yourCardImages[i].Visible = true;
+            while (yourCardImages[i].Position.Y < 610)
             {
-                yourImages[i].Position += new Vector2(4 * (i-1), 10f);
+                yourCardImages[i].Position += new Vector2(3 * (i-1), 10f);
                 await Task.Delay(17);
             }
             electroCardImages[i].Visible = true;
-            while (electroCardImages[i].Position.Y < 400) {
-                electroCardImages[i].Position += new Vector2(10 * (i-1), 10f);
+            while (electroCardImages[i].Position.Y < 330) {
+                electroCardImages[i].Position += new Vector2(9 * (i-1), 10f);
                 await Task.Delay(17);
             }
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            goldenCardImages[i].Visible = true;
+            while (goldenCardImages[i].Position.Y < 470)
+            {
+                goldenCardImages[i].Position += new Vector2(4 * (i-1), 10f);
+                await Task.Delay(17);
+            }
+        }
+
+        CardsCreate();
+        while (yourCardImages[0].Position.Y < 700)
+        {
+            yourCardImages[0].Position += new Vector2(0f, 5f);
+            yourCardImages[1].Position += new Vector2(0f, 5f);
+            yourCardImages[2].Position += new Vector2(0f, 5f);
+            await Task.Delay(17);
+        }
+
+        yourCards[0].IsFaceUp = true;
+        yourCards[1].IsFaceUp = true;
+        yourCards[2].IsFaceUp = true;
+        goldenCards[0].IsFaceUp = true;
+        yourCardImages[0].ChangeAnimatedTexture(yourCards[0].GetTexture().Key, yourCards[0].GetTexture().Value);
+        yourCardImages[1].ChangeAnimatedTexture(yourCards[1].GetTexture().Key, yourCards[1].GetTexture().Value);
+        yourCardImages[2].ChangeAnimatedTexture(yourCards[2].GetTexture().Key, yourCards[2].GetTexture().Value);
+        goldenCardImages[0].ChangeAnimatedTexture(goldenCards[0].GetTexture().Key, goldenCards[0].GetTexture().Value);
+    }
+
+    private void CardsCreate()
+    {   
+        for (int i = 0; i < 3; i++)
+        {
+            G:
+            goldenCards[i] = CardData.CreateRandom(true);
+            if (goldenCards.Where(x => x.Value == goldenCards[i].Value && x.Suit == goldenCards[i].Suit).Count() != 0)
+                goto G;
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            Y:
+            yourCards[i] = CardData.CreateRandom(false);
+            if (yourCards.Where(x => x.Value == yourCards[i].Value && x.Suit == yourCards[i].Suit).Count() != 0 && goldenCards.Where(x => x.Value == yourCards[i].Value && x.Suit == yourCards[i].Suit).Count() != 0)
+                goto Y;
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            E:
+            electroCards[i] = CardData.CreateRandom(false);
+            if (electroCards.Where(x => x.Value == electroCards[i].Value && x.Suit == electroCards[i].Suit).Count() != 0 && goldenCards.Where(x => x.Value == electroCards[i].Value && x.Suit == electroCards[i].Suit).Count() != 0 && yourCards.Where(x => x.Value == electroCards[i].Value && x.Suit == electroCards[i].Suit).Count() != 0)
+                goto E;
         }
     }
 }

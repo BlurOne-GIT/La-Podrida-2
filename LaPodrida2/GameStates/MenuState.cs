@@ -300,11 +300,6 @@ public class MenuState : GameState
         if (logo.Position.X == -150)
             IntroSequence();
 
-        if (e.Key is Microsoft.Xna.Framework.Input.Keys.Up)
-            logo2.Rotation += 1f;
-        else if (e.Key is Microsoft.Xna.Framework.Input.Keys.Down)
-            logo2.Rotation -= 1f;
-
         base.HandleInput(s, e);
     }
 
@@ -607,6 +602,8 @@ public class MenuState : GameState
 
     private async void SingleplayerButton_Clicked(object sender, EventArgs e)
     {
+        Game.Window.Title = "La Podrida 2 - Single Player";
+
         foreach (GameComponent gameObject in _components)
             gameObject.Enabled = false;
 

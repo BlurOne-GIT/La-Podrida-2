@@ -1,11 +1,11 @@
 {
   "version": 2,
-  "dgSpecHash": "/paG1ZA80QhsMbBKnjvAm0cy1Mg2Xv6kwTSBQpKiy+i4uDskS5pv2S2Zex8BF60WGvQaeRCiR2mERXqgFfaupQ==",
+  "dgSpecHash": "IFLsKCRgaYTUvHilzVPU0U3eXbhy98+8rGfYjyThzJ1mGLmBH1j/46nX9blRx1vdU5JIgz46ez7OPOv0FtL3jA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\47572264\\Documents\\GitHub\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
+  "projectFilePath": "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\47572264\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
-    "C:\\Users\\47572264\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
+    "C:\\Users\\bluro\\.nuget\\packages\\monogame.content.builder.task\\3.8.1.303\\monogame.content.builder.task.3.8.1.303.nupkg.sha512",
+    "C:\\Users\\bluro\\.nuget\\packages\\monogame.framework.desktopgl\\3.8.1.303\\monogame.framework.desktopgl.3.8.1.303.nupkg.sha512"
   ],
   "logs": []
 }
