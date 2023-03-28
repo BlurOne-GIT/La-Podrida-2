@@ -62,11 +62,11 @@ public class TextComponent : DrawableGameComponent
         (
             font,
             Text,
-            Position,
+            Position * LaPodrida2.Configs.PartialScale,
             Color * Opacity,
             _rotation,
             pivot,
-            Scale,
+            Scale * LaPodrida2.Configs.PartialScale,
             SpriteEffects.None,
             DrawOrder * 0.1f
         );

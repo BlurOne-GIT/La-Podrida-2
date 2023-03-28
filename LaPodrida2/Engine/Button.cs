@@ -38,7 +38,10 @@ public class Button : DrawableGameComponent
             _ => actionBox.Location
         };
 
-        ActionBox = actionBox;
+        if (hasHover)
+            HoverDetector = new HoverDetector(game, actionBox, Alignment.TopLeft);
+        
+        ActionBox = new Rectangle((int)(actionBox.X * LaPodrida2.Configs.PartialScale), (int)(actionBox.Y * LaPodrida2.Configs.PartialScale), (int)(actionBox.Width * LaPodrida2.Configs.PartialScale), (int)(actionBox.Height * LaPodrida2.Configs.PartialScale));
         Image = texture;
         Enabled = enabled;
         Visible = texture is not null;
@@ -49,8 +52,6 @@ public class Button : DrawableGameComponent
         //Configs.ResolutionChanged += ResetRectangle;
         Input.ButtonDown += Check;
         
-        if (hasHover)
-            HoverDetector = new HoverDetector(game, ActionBox, Alignment.TopLeft);
     }
 
     #region Methods

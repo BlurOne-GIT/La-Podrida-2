@@ -74,12 +74,12 @@ public class SimpleImage : DrawableGameComponent
         SpriteBatch _spriteBatch = Game.Services.GetService<SpriteBatch>();
         _spriteBatch.Draw(
             texture,
-            Position,
+            Position * LaPodrida2.Configs.PartialScale,
             Animation is not null ? Animation.NextFrame() : null,
             Color * Opacity,
             _rotation,
             pivot,
-            Scale,
+            Scale * LaPodrida2.Configs.PartialScale,
             SpriteEffects.None,
             DrawOrder * 0.1f
         );

@@ -29,6 +29,9 @@ public class Animation<T>
 
     public T NextFrame()
     {
+        if (Paused)
+            return CurrentFrame();
+
         if (pos > _frames.Length - 1)
         {
             if (isLooped)
@@ -52,6 +55,8 @@ public class Animation<T>
         else
             return _frames[pos-1];
     }
+
+    public T[] GetFrames() => _frames;
 
     public static Animation<Rectangle> TextureAnimation(Point frameSize, Point bounds, bool looped, int frameDuration)
     {

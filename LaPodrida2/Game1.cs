@@ -29,6 +29,12 @@ public class Game1 : Game
     protected override void Initialize()
     {
         // TODO: Add your initialization logic here
+        if (GraphicsDevice.Adapter.CurrentDisplayMode.Height < 800)
+        {
+            _graphics.PreferredBackBufferWidth = 600;
+            _graphics.PreferredBackBufferHeight = 600;
+            _graphics.ApplyChanges();
+        }
 
         base.Initialize();
         Window.KeyDown += UpdateInputs;
@@ -43,7 +49,7 @@ public class Game1 : Game
     {
         _spriteBatch = new SpriteBatch(GraphicsDevice);
         Services.AddService<SpriteBatch>(_spriteBatch);
-        Configs.Initialize();
+        Configs.Initialize(GraphicsDevice.Adapter.CurrentDisplayMode.Height < 800);
         UpdateMusicVolume(null, null);
         UpdateSfxVolume(null, null);
         Configs.MusicVolumeChanged += UpdateMusicVolume;
@@ -69,7 +75,7 @@ public class Game1 : Game
         GraphicsDevice.Clear(Color.Black);
 
         // TODO: Add your drawing code here
-        _spriteBatch.Begin(samplerState: SamplerState.PointWrap);
+        _spriteBatch.Begin(samplerState: SamplerState.LinearWrap);
         _currentGameState.Draw(gameTime);
         _spriteBatch.End();
 

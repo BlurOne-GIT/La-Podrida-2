@@ -52,17 +52,17 @@ public struct CardData
         textures = new Dictionary<string, Texture2D>();
         foreach (var suit in Enum.GetValues<Suits>())
         {
-            textures[$"{suit}"] = content.Load<Texture2D>($"cards/{suit}");
-            textures[$"golden_{suit}"] = content.Load<Texture2D>($"cards/golden_{suit}");
+            textures[$"{suit}"] = content.Load<Texture2D>($"Textures/Cards/{suit}");
+            textures[$"golden_{suit}"] = content.Load<Texture2D>($"Textures/Cards/golden_{suit}");
         }
         if (isCasino)
-            textures.Add("back", content.Load<Texture2D>("Cards/back_red"));
+            textures.Add("back", content.Load<Texture2D>("Textures/Cards/back_red"));
         else
-            textures.Add("back", content.Load<Texture2D>("Cards/back_blue"));
+            textures.Add("back", content.Load<Texture2D>("Textures/Cards/back_blue"));
 
         animations = new List<Animation<Rectangle>>();
-        var animation = Animation<Rectangle>.TextureAnimation(new Point(88, 124), new Point(440, 372), false, 1);
-        for (int i = 0; i < 13; i++)
-            animations.Add(new Animation<Rectangle>(new Rectangle[1]{animation.NextFrame()}, false));
+        var animation = Animation<Rectangle>.TextureAnimation(new Point(88, 124), new Point(440, 372), false, 1).GetFrames();
+        foreach (var frame in animation)
+            animations.Add(new Animation<Rectangle>(new[] { frame }, false, 1));
     }
 }

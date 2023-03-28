@@ -37,6 +37,10 @@ public class TutorialState : GameState
 
     public override void LoadContent()
     {
+        #region Textures
+        CardData.LoadTextures(Game.Content, false);
+        #endregion
+
         #region SimpleImages
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
         table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 1.2f);
@@ -172,7 +176,7 @@ public class TutorialState : GameState
         }
         deck.Visible = false;
 
-        while (table.Position.Y > 340)
+        while (table.Position.Y > 250)
         {
             table.Position += new Vector2(0f, -2f);
             await Task.Delay(17);
@@ -206,7 +210,7 @@ public class TutorialState : GameState
             goldenCardImages[i].Visible = true;
             while (goldenCardImages[i].Position.Y < 470)
             {
-                goldenCardImages[i].Position += new Vector2(4 * (i-1), 10f);
+                goldenCardImages[i].Position += new Vector2(4.5f * (i-1), 10f);
                 await Task.Delay(17);
             }
         }
@@ -235,23 +239,26 @@ public class TutorialState : GameState
         for (int i = 0; i < 3; i++)
         {
             G:
-            goldenCards[i] = CardData.CreateRandom(true);
-            if (goldenCards.Where(x => x.Value == goldenCards[i].Value && x.Suit == goldenCards[i].Suit).Count() != 0)
+            var r = CardData.CreateRandom(true);
+            if (goldenCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0)
                 goto G;
+            goldenCards[i] = r;
         }
         for (int i = 0; i < 3; i++)
         {
             Y:
-            yourCards[i] = CardData.CreateRandom(false);
-            if (yourCards.Where(x => x.Value == yourCards[i].Value && x.Suit == yourCards[i].Suit).Count() != 0 && goldenCards.Where(x => x.Value == yourCards[i].Value && x.Suit == yourCards[i].Suit).Count() != 0)
+            var r = CardData.CreateRandom(false);
+            if (yourCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0 && goldenCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0)
                 goto Y;
+            yourCards[i] = r;
         }
         for (int i = 0; i < 3; i++)
         {
             E:
-            electroCards[i] = CardData.CreateRandom(false);
-            if (electroCards.Where(x => x.Value == electroCards[i].Value && x.Suit == electroCards[i].Suit).Count() != 0 && goldenCards.Where(x => x.Value == electroCards[i].Value && x.Suit == electroCards[i].Suit).Count() != 0 && yourCards.Where(x => x.Value == electroCards[i].Value && x.Suit == electroCards[i].Suit).Count() != 0)
+            var r = CardData.CreateRandom(false);
+            if (electroCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0 && goldenCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0 && yourCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0)
                 goto E;
+            electroCards[i] = r;
         }
     }
 }

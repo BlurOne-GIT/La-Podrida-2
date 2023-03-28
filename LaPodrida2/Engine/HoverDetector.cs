@@ -26,12 +26,15 @@ public class HoverDetector : GameComponent
             _ => actionBox.Location
         };
 
-        ActionBox = actionBox;
+        ActionBox = new Rectangle((int)(actionBox.X * LaPodrida2.Configs.PartialScale), (int)(actionBox.Y * LaPodrida2.Configs.PartialScale), (int)(actionBox.Width * LaPodrida2.Configs.PartialScale), (int)(actionBox.Height * LaPodrida2.Configs.PartialScale));
         Enabled = enabled;
     }
 
     public override void Update(GameTime gameTime)
     {
+        if (!Game.IsActive)
+            return;
+
         if (ActionBox.Contains(Input.MousePoint))
         {
             if (!Hovering)

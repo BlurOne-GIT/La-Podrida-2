@@ -1,27 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj": {}
+    "C:\\Users\\47572264\\Documents\\GitHub\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj": {}
   },
   "projects": {
-    "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj": {
+    "C:\\Users\\47572264\\Documents\\GitHub\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
+        "projectUniqueName": "C:\\Users\\47572264\\Documents\\GitHub\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
         "projectName": "LaPodrida2",
-        "projectPath": "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
-        "packagesPath": "C:\\Users\\bluro\\.nuget\\packages\\",
-        "outputPath": "A:\\Productivity\\Coding\\C#\\La-Podrida-2\\LaPodrida2\\obj\\",
+        "projectPath": "C:\\Users\\47572264\\Documents\\GitHub\\La-Podrida-2\\LaPodrida2\\LaPodrida2.csproj",
+        "packagesPath": "C:\\Users\\47572264\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\47572264\\Documents\\GitHub\\La-Podrida-2\\LaPodrida2\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\bluro\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+          "C:\\Users\\47572264\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net6.0"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -65,7 +66,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.104\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.407\\RuntimeIdentifierGraph.json"
         }
       }
     }

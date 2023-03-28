@@ -23,11 +23,15 @@ public static class Configs
     #region Properties
     /* 0 */ public static int MusicVolume { get => _musicVolume; set {SetConfig(value); _musicVolume = value; MusicVolumeChanged?.Invoke(null, new EventArgs());}}
     /* 1 */ public static int SfxVolume { get => _sfxVolume; set {SetConfig(value); _sfxVolume = value; SfxVolumeChaged?.Invoke(null, new EventArgs());}}
+    public static float PartialScale { get; private set; } = 1f;
     #endregion
 
     // Constructor
-    public static void Initialize()
+    public static void Initialize(bool shallShrink)
     {
+        if (shallShrink)
+            PartialScale = 0.75f;
+
         try
         {
             fileStream = File.Open(file, FileMode.Open);
