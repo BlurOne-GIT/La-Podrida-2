@@ -585,3 +585,15 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Tutorial/Table.png
 
+#begin Textures/Tutorial/tablebg.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Tutorial/tablebg.png
+

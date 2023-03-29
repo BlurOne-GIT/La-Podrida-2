@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Graphics;
 using Engine;
 
+// HOLA ESTIMADO JERONIMO LUIS SANCHEZ PERUGA
 namespace LaPodrida2;
 
 public class TutorialState : GameState
@@ -46,12 +47,12 @@ public class TutorialState : GameState
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
         table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 1.2f);
         deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_blue"), new Vector2(200f, -200f), 5);
-        tutoBg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\tablebg"), Vector2.Zero, 1, anchor: Alignment.TopRight, visible: false, animation: Animation<Rectangle>.TextureAnimation(new Point(800, 800), new Point(1600, 800), true, 60), opacity: 0f);
+        tutoBg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\tablebg"), Vector2.Zero, 1, anchor: Alignment.TopLeft, visible: false, animation: Animation<Rectangle>.TextureAnimation(new Point(800, 800), new Point(1600, 800), true, 30), opacity: 0f);
         for (int i = 0; i < 3; i++)
         {
-            electroCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 200f), 7, false);
-            goldenCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 200f), 7, false);
-            yourCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 200f), 7, false);
+            electroCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 100f), 7, false);
+            goldenCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 100f), 7, false);
+            yourCardImages[i] = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\back_blue"), new Vector2(400f, 100f), 7, false);
             _components.Add(electroCardImages[i]);
             _components.Add(goldenCardImages[i]);
             _components.Add(yourCardImages[i]);
@@ -124,6 +125,7 @@ public class TutorialState : GameState
 
     public override void UnloadContent()
     {
+        // LA PODRIDAAAAAAAAAAAAAAAAA (2)
         throw new NotImplementedException();
     }
 
@@ -195,13 +197,13 @@ public class TutorialState : GameState
         for (int i = 0; i < 3; i++)
         {
             yourCardImages[i].Visible = true;
-            while (yourCardImages[i].Position.Y < 610)
+            while (yourCardImages[i].Position.Y < 550)
             {
                 yourCardImages[i].Position += new Vector2(3 * (i-1), 10f);
                 await Task.Delay(17);
             }
             electroCardImages[i].Visible = true;
-            while (electroCardImages[i].Position.Y < 330) {
+            while (electroCardImages[i].Position.Y < 250) {
                 electroCardImages[i].Position += new Vector2(9 * (i-1), 10f);
                 await Task.Delay(17);
             }
@@ -209,7 +211,7 @@ public class TutorialState : GameState
         for (int i = 0; i < 3; i++)
         {
             goldenCardImages[i].Visible = true;
-            while (goldenCardImages[i].Position.Y < 470)
+            while (goldenCardImages[i].Position.Y < 400)
             {
                 goldenCardImages[i].Position += new Vector2(4.5f * (i-1), 10f);
                 await Task.Delay(17);
@@ -222,8 +224,15 @@ public class TutorialState : GameState
             yourCardImages[0].Position += new Vector2(0f, 5f);
             yourCardImages[1].Position += new Vector2(0f, 5f);
             yourCardImages[2].Position += new Vector2(0f, 5f);
+            electroCardImages[0].Position += new Vector2(0f, -10f);
+            electroCardImages[1].Position += new Vector2(0f, -10f);
+            electroCardImages[2].Position += new Vector2(0f, -10f);
             await Task.Delay(17);
         }
+
+        electroCardImages[0].Visible = false;
+        electroCardImages[1].Visible = false;
+        electroCardImages[2].Visible = false;
 
         yourCards[0].IsFaceUp = true;
         yourCards[1].IsFaceUp = true;
@@ -239,27 +248,24 @@ public class TutorialState : GameState
     {   
         for (int i = 0; i < 3; i++)
         {
-            G:
-            var r = CardData.CreateRandom(true);
-            if (goldenCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0)
-                goto G;
-            goldenCards[i] = r;
-        }
-        for (int i = 0; i < 3; i++)
-        {
             Y:
-            var r = CardData.CreateRandom(false);
-            if (yourCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0 && goldenCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0)
+            var y = CardData.CreateRandom(false);
+            if (yourCards.Any(x => x.Value == y.Value && x.Suit == y.Suit) || electroCards.Any(x => x.Value == y.Value && x.Suit == y.Suit))
                 goto Y;
-            yourCards[i] = r;
+            yourCards[i] = y;
+            E:
+            var e = CardData.CreateRandom(false);
+            if (yourCards.Any(x => x.Value == e.Value && x.Suit == e.Suit) || electroCards.Any(x => x.Value == e.Value && x.Suit == e.Suit))
+                goto E;
+            electroCards[i] = e;
         }
         for (int i = 0; i < 3; i++)
         {
-            E:
-            var r = CardData.CreateRandom(false);
-            if (electroCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0 && goldenCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0 && yourCards.Where(x => x.Value == r.Value && x.Suit == r.Suit).Count() != 0)
-                goto E;
-            electroCards[i] = r;
+            G:
+            var g = CardData.CreateRandom(true);
+            if (yourCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || electroCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || goldenCards.Any(x => x.Value == g.Value && x.Suit == g.Suit))
+                goto G;
+            goldenCards[i] = g;
         }
     }
 }

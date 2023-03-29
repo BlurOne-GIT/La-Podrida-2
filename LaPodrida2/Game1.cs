@@ -56,7 +56,8 @@ public class Game1 : Game
         Configs.SfxVolumeChaged += UpdateSfxVolume;
 
         // TODO: use this.Content to load your game content here
-        SwitchGameState(new MenuState(this));
+        //SwitchGameState(new MenuState(this));
+        /* DEBUG */ SwitchGameState(new TutorialState(this));
     }
 
     protected override void Update(GameTime gameTime)
