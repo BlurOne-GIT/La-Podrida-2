@@ -52,7 +52,7 @@ public class CasinoState : GameState
         #region SimpleImages
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
         table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\Table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 1.5f);
-        deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_red"), new Vector2(200f, -200f), 8);
+        deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_red"), new Vector2(400f, -200f), 8);
         gameBg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\gameBg"), Vector2.Zero, 1, anchor: Alignment.TopLeft, visible: false, /*animation: Animation<Rectangle>.TextureAnimation(new Point(800, 800), new Point(1600, 800), true, 30),*/ opacity: 0f);
         map = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\map"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft, visible: true, animation: Animation<Rectangle>.TextureAnimation(new Point(800, 600), new Point(800, 1200), true, 30));
         map.Animation.Paused = true;
@@ -84,12 +84,12 @@ public class CasinoState : GameState
         _components.Add(deckButton);
         for (int i = 0; i < 6; i+=2)
         {
-            cardPlacerButtons[i] = new Button(Game, new Rectangle(265 + (i * 135), 250, 88, 124), enabled: false, hasHover: false, texture: new SimpleImage(Game, back, new Vector2(265 + (i * 135), 250), 4, false));
-            cardPlacerButtons[i+1] = new Button(Game, new Rectangle(265 + (i * 135), 550, 88, 124), enabled: false, hasHover: false, texture: new SimpleImage(Game, back, new Vector2(265 + (i * 135), 550), 4, false));
-            cardPlacerButtons[i/2 + 6] = new Button(Game, new Rectangle(265 + (i * 135), 400, 88, 124), enabled: false, hasHover: false, texture: new SimpleImage(Game, back, new Vector2(265 + (i * 135), 400), 4, false));
+            cardPlacerButtons[i] = new Button(Game, new Rectangle(265 + (i/2 * 135), 250, 88, 124), enabled: false, hasHover: false, texture: new SimpleImage(Game, back, new Vector2(265 + (i/2 * 135), 250), 4, false));
+            cardPlacerButtons[i+1] = new Button(Game, new Rectangle(265 + (i/2 * 135), 550, 88, 124), enabled: false, hasHover: false, texture: new SimpleImage(Game, back, new Vector2(265 + (i/2 * 135), 550), 4, false));
+            cardPlacerButtons[i/2 + 6] = new Button(Game, new Rectangle(265 + (i/2 * 135), 400, 88, 124), enabled: false, hasHover: false, texture: new SimpleImage(Game, back, new Vector2(265 + (i/2 * 135), 400), 4, false));
             _components.Add(cardPlacerButtons[i]);
-            _components.Add(cardPlacerButtons[i + 3]);
-            _components.Add(cardPlacerButtons[i + 6]);
+            _components.Add(cardPlacerButtons[i+1]);
+            _components.Add(cardPlacerButtons[i/2 + 6]);
         }
         #endregion
 
@@ -127,6 +127,12 @@ public class CasinoState : GameState
         #endregion
     }
 
+    public override void UnloadContent()
+    {
+        // LA PODRIDAAAAAAAAAAAAAAAAA (2)
+        throw new NotImplementedException();
+    }
+
     public override void Initialize()
     {
         base.Initialize();
@@ -134,6 +140,7 @@ public class CasinoState : GameState
         yourCardButtons[0].LeftClicked += PlayCard;
         yourCardButtons[1].LeftClicked += PlayCard;
         yourCardButtons[2].LeftClicked += PlayCard;
+        deckButton.LeftClicked += Decker;
         foreach (Button b in cardPlacerButtons)
         {
             b.LeftClicked += PlaceCard;
@@ -162,15 +169,8 @@ public class CasinoState : GameState
         base.Update(gameTime);
     }
 
-    public override void UnloadContent()
-    {
-        // LA PODRIDAAAAAAAAAAAAAAAAA (2)
-        throw new NotImplementedException();
-    }
-
     private async void IntroSequence()
     {
-        
         while (bg.Position.Y > 0)
         {
             bg.Position += new Vector2(0f, -5f);
@@ -200,21 +200,23 @@ public class CasinoState : GameState
             await Task.Delay(17);
         }
 
-        while (deck.Position.Y < 490)
+        while (deck.Position.Y < 500)
         {
-            deck.Position += new Vector2(0f, 25f);
+            deck.Position += new Vector2(0f, 50f);
             await Task.Delay(17);
         }
 
         await Task.Delay(500);
 
-        deck.Visible = false;
         gameBg.Visible = true;
         while (gameBg.Opacity < 1f)
         {
             gameBg.Opacity += 0.02f;
+            if (deck.Position.Y < 705)
+                deck.Position += new Vector2(0f, 5f);
             await Task.Delay(17);
         }
+        deck.Position = new Vector2(400f, 708f);
 
         MediaPlayer.Play(bgm);
         await Task.Delay(500);
@@ -224,7 +226,6 @@ public class CasinoState : GameState
 
     private void StateMachineHandler()
     {
-        ElectroHandOut();
         Game.Window.Title = $"La Podrida 2 - Hand {handCount+1}";
         if (handCount % 2 == 0)
         {
@@ -243,15 +244,35 @@ public class CasinoState : GameState
 
     private void YourHandOut()
     {
+        for (int i = 0; i < 3; i++)
+        {
+            yourCardImages[i].Visible = true;
+            yourCardImages[i].Position = new Vector2(400f, 700f);
+            electroCardImages[i].Visible = true;
+            electroCardImages[i].Position = new Vector2(400f, 700f);
+            goldenCardImages[i].Visible = true;
+            goldenCardImages[i].Position = new Vector2(400f, 700f);
+        }
         deckButton.Enabled = true;
-        deckButton.Image.Visible = true;
-        oscilatingOpacityImageReference = deckButton.Image;
+        //oscilatingOpacityImageReference = deckButton.Image;
         CreateCards();
     }
 
-    private void Decker()
+    private void Decker(object sender, EventArgs e)
     {
+        deckButton.Enabled = false;
+        deckButton.Image.Visible = false;
+        if (!goldenCardImages[2].Visible)
+        {
+            deck.Visible = false;
+            cardPlacerButtons[0].Enabled = true;
+            cardPlacerButtons[0].Image.Visible = true;
+            oscilatingOpacityImageReference = cardPlacerButtons[0].Image;
+            return;
+        }
 
+        oscilatingOpacityImageReference = null;
+        deck.Visible = true;
     }
 
     private void PlaceCard(object sender, EventArgs e)
@@ -265,12 +286,26 @@ public class CasinoState : GameState
             deckButton.Enabled = true;
             deckButton.Image.Visible = true;
             oscilatingOpacityImageReference = deckButton.Image;
-            return;
+        } else {
+            cardPlacerButtons[index+1].Enabled = true;
+            cardPlacerButtons[index+1].Image.Visible = true;
+            oscilatingOpacityImageReference = cardPlacerButtons[index+1].Image;
         }
         
-        cardPlacerButtons[index+1].Enabled = true;
-        cardPlacerButtons[index+1].Image.Visible = true;
-        oscilatingOpacityImageReference = cardPlacerButtons[index+1].Image;
+
+        if (index > 5)
+        {
+            goldenCardImages[index-6].Visible = true;
+            goldenCardImages[index-6].Position = new Vector2(265f + (index-6) * 135, 400f);
+        } else if (index % 2 == 0)
+        {
+            electroCardImages[index/2].Visible = true;
+            electroCardImages[index/2].Position = new Vector2(265f + (index/2) * 135, 250f);
+        } else
+        {
+            yourCardImages[index/2].Visible = true;
+            yourCardImages[index/2].Position = new Vector2(265f + (index/2) * 135, 550f);
+        }
     }
 
     private async void ElectroHandOut()
