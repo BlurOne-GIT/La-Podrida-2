@@ -229,6 +229,7 @@ public class CasinoState : GameState
         Game.Window.Title = $"La Podrida 2 - Hand {handCount+1}";
         if (handCount % 2 == 0)
         {
+            if (handCount is 0) Decker(null, null);
             YourHandOut();
         } else if (handCount == 3)
         {
@@ -283,6 +284,11 @@ public class CasinoState : GameState
 
         if (index is 8)
         {
+            while (deck.Position.Y < 700f)
+            {
+                deck.Position += new Vector2(0f, -1f);
+                await Task.Delay(17);
+            }
             deckButton.Enabled = true;
             deckButton.Image.Visible = true;
             oscilatingOpacityImageReference = deckButton.Image;
