@@ -19,16 +19,18 @@ public class CasinoState : GameState
     private SimpleImage map;
     private SimpleImage gameBg;
     private TextComponent ccText;
-    private CardData?[] electroCards = new CardData?[3];
+    private CardData[] electroCards = new CardData[3];
     private SimpleImage[] electroCardImages = new SimpleImage[3];
     private CardData[] goldenCards = new CardData[3];
     private SimpleImage[] goldenCardImages = new SimpleImage[3];
     private CardData[] yourCards = new CardData[3];
     private SimpleImage[] yourCardImages = new SimpleImage[3];
-    private CardData? yourPlayedCard;
-    private CardData? electroPlayedCard;
-    private bool yourPoints = false;
-    private bool electroPoints = false;
+    private int yourPlayedCard;
+    private int electroPlayedCard;
+    private int yourPoints = 0;
+    private int electroPoints = 0;
+    private bool yourRounds = false;
+    private bool electroRounds = false;
     private bool yourTurn = true;
     private int roundCount = 0;
     private int handCount = 0;
@@ -286,6 +288,30 @@ public class CasinoState : GameState
             deck.Position += new Vector2(-9f, -10f);
             await Task.Delay(17);
         }
+
+        while (yourCardImages[0].Position.Y < 700)
+        {
+            yourCardImages[0].Position += new Vector2(0f, 5f);
+            yourCardImages[1].Position += new Vector2(0f, 5f);
+            yourCardImages[2].Position += new Vector2(0f, 5f);
+            electroCardImages[0].Position += new Vector2(0f, -10f);
+            electroCardImages[1].Position += new Vector2(0f, -10f);
+            electroCardImages[2].Position += new Vector2(0f, -10f);
+            await Task.Delay(17);
+        }
+
+        electroCardImages[0].Visible = false;
+        electroCardImages[1].Visible = false;
+        electroCardImages[2].Visible = false;
+
+        yourCards[0].IsFaceUp = true;
+        yourCards[1].IsFaceUp = true;
+        yourCards[2].IsFaceUp = true;
+        yourCardImages[0].ChangeAnimatedTexture(yourCards[0].GetTexture().Key, yourCards[0].GetTexture().Value);
+        yourCardImages[1].ChangeAnimatedTexture(yourCards[1].GetTexture().Key, yourCards[1].GetTexture().Value);
+        yourCardImages[2].ChangeAnimatedTexture(yourCards[2].GetTexture().Key, yourCards[2].GetTexture().Value);
+
+        ElectroPlayCard();
     }
 
     private async void PlaceCard(object sender, EventArgs e)
@@ -406,21 +432,21 @@ public class CasinoState : GameState
         {
             Y:
             var y = CardData.CreateRandom(false);
-            if (yourCards.Any(x => x.Value == y.Value && x.Suit == y.Suit) || electroCards.Any(x => x?.Value == y.Value && x?.Suit == y.Suit))
+            if (yourCards.Any(x => x.Value == y.Value && x.Suit == y.Suit) || electroCards.Any(x => x.Value == y.Value && x.Suit == y.Suit))
                 goto Y;
             yourCards[i] = y;
             E:
             var e = CardData.CreateRandom(false);
-            if (yourCards.Any(x => x.Value == e.Value && x.Suit == e.Suit) || electroCards.Any(x => x?.Value == e.Value && x?.Suit == e.Suit))
+            if (yourCards.Any(x => x.Value == e.Value && x.Suit == e.Suit) || electroCards.Any(x => x.Value == e.Value && x.Suit == e.Suit))
                 goto E;
             electroCards[i] = e;
         }
-        electroCards = electroCards.OrderBy(x => x?.Value).ToArray();
+        electroCards = electroCards.OrderBy(x => x.Value).ToArray();
         for (int i = 0; i < 3; i++)
         {
             G:
             var g = CardData.CreateRandom(true);
-            if (yourCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || electroCards.Any(x => x?.Value == g.Value && x?.Suit == g.Suit) || goldenCards.Any(x => x.Value == g.Value && x.Suit == g.Suit))
+            if (yourCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || electroCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || goldenCards.Any(x => x.Value == g.Value && x.Suit == g.Suit))
                 goto G;
             goldenCards[i] = g;
         }
@@ -428,26 +454,93 @@ public class CasinoState : GameState
 
     private void PlayCard(object sender, EventArgs e)
     {
-        (sender as Button).Enabled = false;
+        yourCardButtons[0].Enabled = false;
+        yourCardButtons[1].Enabled = false;
+        yourCardButtons[2].Enabled = false;
         int cardIndex = yourCardButtons.ToList().IndexOf(sender as Button);
 
-        if (electroPlayedCard is null)
+        if (electroPlayedCard is -1)
             ElectroPlayCard();
-
+        else
+            EvaluateRound();
     }
 
     private void ElectroPlayCard()
     {
-        CardData c = (CardData)electroCards.FirstOrDefault((x => x?.Suit == goldenCards[roundCount].Suit), electroCards.First(x => x is not null));
-        int index = Array.IndexOf(electroCards, c as CardData?);
-        c.IsFaceUp = true;
-        electroCardImages[index].Position = new Vector2(265 + 135 * roundCount, 250f);
-        electroCards[index] = null;
-        electroPlayedCard = c;
+        electroPlayedCard = Array.IndexOf(electroCards, electroCards.FirstOrDefault((x => x.Suit == goldenCards[roundCount].Suit && !x.Used), electroCards.First(x => !x.Used)));
+        electroCards[electroPlayedCard].IsFaceUp = true;
+        electroCardImages[electroPlayedCard].ChangeAnimatedTexture(electroCards[electroPlayedCard].GetTexture().Key, electroCards[electroPlayedCard].GetTexture().Value);
+        electroCardImages[electroPlayedCard].Position = new Vector2(265 + 135 * roundCount, 250f);
+        electroCards[electroPlayedCard].Used = true;
+
+        if (yourPlayedCard is -1)
+        {
+            yourTurn = true;
+            for (int i = 0; i < 3; i++)
+                if (!yourCards[i].Used)
+                    yourCardButtons[i].Enabled = true;
+        }
+        else
+            EvaluateRound();
     }
 
     private void EvaluateRound()
     {
+        if (yourCards[yourPlayedCard].Value == electroCards[electroPlayedCard].Value)
+            HandleScore(handCount % 2 == 1);
+
+        int yourValue = yourCards[yourPlayedCard].Points + yourCards[yourPlayedCard].Suit == goldenCards[roundCount].Suit ? 100 : 0;
+        int electroValue = electroCards[electroPlayedCard].Points + electroCards[electroPlayedCard].Suit == goldenCards[roundCount].Suit ? 100 : 0;
         
+        HandleScore(yourValue > electroValue);
+    }
+
+    private void HandleScore(bool youWon)
+    {
+        if (youWon)
+        {
+            yourCards[yourPlayedCard].Won = true;
+            yourCardImages[yourPlayedCard].ChangeAnimatedTexture(yourCards[yourPlayedCard].GetTexture().Key, yourCards[yourPlayedCard].GetTexture().Value);
+            if (yourRounds)
+            {
+                yourPoints += goldenCards[0].Points + goldenCards[1].Points + (goldenCards[2].IsFaceUp ? goldenCards[2].Points : 0);
+                EndRound();
+                return;
+            }
+            else
+                yourRounds = true;
+        } else
+        {
+            electroCards[electroPlayedCard].Won = true;
+            electroCardImages[electroPlayedCard].ChangeAnimatedTexture(electroCards[electroPlayedCard].GetTexture().Key, electroCards[electroPlayedCard].GetTexture().Value);
+            if (electroRounds)
+            {
+                electroPoints += goldenCards[0].Points + goldenCards[1].Points + (goldenCards[2].IsFaceUp ? goldenCards[2].Points : 0);
+                EndRound();
+                return;
+            }
+            else
+                electroRounds = true;
+        }
+
+        yourTurn = youWon;
+        roundCount++;
+        yourPlayedCard = -1;
+        electroPlayedCard = -1;
+        goldenCards[roundCount].IsFaceUp = true;
+        goldenCardImages[roundCount].ChangeAnimatedTexture(goldenCards[roundCount].GetTexture().Key, goldenCards[roundCount].GetTexture().Value);
+        if (youWon)
+        {
+
+        }
+        else
+            ElectroPlayCard();
+
+
+    }
+
+    private void EndRound()
+    {
+
     }
 }

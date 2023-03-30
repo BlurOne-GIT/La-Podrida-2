@@ -23,6 +23,7 @@ public struct CardData
     public bool IsGolden { get; }
     public bool IsFaceUp { get; set; }
     public bool Won { get; set; }
+    public bool Used { get; set; }
     public CardData(int value, Suits suit, bool isGolden)
     {
         Value = value;
@@ -30,6 +31,7 @@ public struct CardData
         IsGolden = isGolden;
         IsFaceUp = false;
         Won = false;
+        Used = false;
     }
 
     public KeyValuePair<Texture2D, Animation<Rectangle>> GetTexture()
