@@ -261,13 +261,18 @@ public class CasinoState : GameState
         CreateCards();
     }
 
-    private void Decker(object sender, EventArgs e)
+    private async void Decker(object sender, EventArgs e)
     {
         deckButton.Enabled = false;
         deckButton.Image.Visible = false;
         if (!goldenCardImages[2].Visible)
         {
-            deck.Visible = false;
+            if (sender is not null)
+                while (deck.Position.Y < 700)
+                {
+                    deck.Position += new Vector2(9f, 10f);
+                    await Task.Delay(17);
+                }
             cardPlacerButtons[0].Enabled = true;
             cardPlacerButtons[0].Image.Visible = true;
             oscilatingOpacityImageReference = cardPlacerButtons[0].Image;
@@ -276,6 +281,11 @@ public class CasinoState : GameState
 
         oscilatingOpacityImageReference = null;
         deck.Visible = true;
+        while (deck.Position.Y > 400)
+        {
+            deck.Position += new Vector2(-9f, -10f);
+            await Task.Delay(17);
+        }
     }
 
     private async void PlaceCard(object sender, EventArgs e)
@@ -306,20 +316,24 @@ public class CasinoState : GameState
             goldenCardImages[index-6].Visible = true;
             while (goldenCardImages[index-6].Position.Y > 400f)
             {
-                goldenCardImages[index-6].Position += new Vector2(4.5f * (index-6), 10f);
+                goldenCardImages[index-6].Position += new Vector2(4.5f * (index-7), -10f);
                 await Task.Delay(17);
             }
         } else if (index % 2 == 0)
         {
             electroCardImages[index/2].Visible = true;
             while (electroCardImages[index/2].Position.Y > 250) {
-                electroCardImages[index/2].Position += new Vector2(3 * (index/2), 10f);
+                electroCardImages[index/2].Position += new Vector2(3f * (index/2-1), -10f);
                 await Task.Delay(17);
             }
         } else
         {
-            yourCardImages[index/2].Visible = true;
-            yourCardImages[index/2].Position = new Vector2(265f + (index/2) * 135, 550f);
+            yourCardImages[(index-1)/2].Visible = true;
+            while (yourCardImages[index/2].Position.Y > 550)
+            {
+                yourCardImages[index/2].Position += new Vector2(9f * ((index-1)/2-1), -10f);
+                await Task.Delay(17);
+            }
         }
     }
 
