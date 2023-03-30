@@ -214,6 +214,8 @@ public class CasinoState : GameState
             gameBg.Opacity += 0.02f;
             if (deck.Position.Y < 705)
                 deck.Position += new Vector2(0f, 5f);
+            if (deck.Position.Y >= 705 && deck.Position.Y < 708)
+                deck.Position += new Vector2(0f, 1f);
             await Task.Delay(17);
         }
         deck.Position = new Vector2(400f, 708f);
@@ -276,7 +278,7 @@ public class CasinoState : GameState
         deck.Visible = true;
     }
 
-    private void PlaceCard(object sender, EventArgs e)
+    private async void PlaceCard(object sender, EventArgs e)
     {
         int index = Array.IndexOf(cardPlacerButtons, sender);
         (sender as Button).Enabled = false;
@@ -284,7 +286,7 @@ public class CasinoState : GameState
 
         if (index is 8)
         {
-            while (deck.Position.Y < 700f)
+            while (deck.Position.Y > 700f)
             {
                 deck.Position += new Vector2(0f, -1f);
                 await Task.Delay(17);
@@ -302,11 +304,18 @@ public class CasinoState : GameState
         if (index > 5)
         {
             goldenCardImages[index-6].Visible = true;
-            goldenCardImages[index-6].Position = new Vector2(265f + (index-6) * 135, 400f);
+            while (goldenCardImages[index-6].Position.Y > 400f)
+            {
+                goldenCardImages[index-6].Position += new Vector2(4.5f * (index-6), 10f);
+                await Task.Delay(17);
+            }
         } else if (index % 2 == 0)
         {
             electroCardImages[index/2].Visible = true;
-            electroCardImages[index/2].Position = new Vector2(265f + (index/2) * 135, 250f);
+            while (electroCardImages[index/2].Position.Y > 250) {
+                electroCardImages[index/2].Position += new Vector2(3 * (index/2), 10f);
+                await Task.Delay(17);
+            }
         } else
         {
             yourCardImages[index/2].Visible = true;
