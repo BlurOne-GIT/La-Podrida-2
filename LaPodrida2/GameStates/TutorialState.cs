@@ -23,14 +23,37 @@ public class TutorialState : GameState
     private SoundEffect vo3; // "I guess there's time, I'll give you a little tutorial."
     private SoundEffect vo4; // "Yes, this is my house and this is my table!"
     private SoundEffect vo5; // "If you don't like the stock logo you can leave!"
-    private CardData[] electroCards = new CardData[3];
+    private SoundEffect vo6; // "Well, it starts easy, each player gets 3 cards."
+    private SoundEffect vo7; // "Then 3 cards are placed in the middle."
+    private SoundEffect vo8; // "Now the first of the cards in the middle can be flipped."
+    private SoundEffect vo9; // "Those cards, as you can see, are the golden cards."
+    private SoundEffect vo10; // "The game consists of a best of 3, the biggest card wins the round."
+    private SoundEffect vo11; // "Now, all cards from the suit of the golden card have higher values than the other suits."
+    private SoundEffect vo12; // "Come on, for example, play a card."
+    private SoundEffect vo13; // "Now, I'll play a card."
+    private SoundEffect vo14; // "As you can see, the golden card has a higher value than the other suits."
+    private SoundEffect vo15; // "And, as you might have discovered, there's a golden card per round."
+    private SoundEffect vo16; // "Let's keep on playing."
+    private SoundEffect vo17; // "Now that the hand's over, the winner gets the amount of points from the values of the golden cards."
+    private SoundEffect vo18; // "An ace has a point value of 20."
+    private SoundEffect vo19; // "Now, let's play another hand. Grab the deck and hand out the cards."
+    private SoundEffect vo20; // "Well done, a game consists of 7 hands, the player with the most points after that wins."
+    private SoundEffect vo21; // "Let's get going to the casino, else we're gonna be there late!"
+    private CardData?[] electroCards = new CardData?[3];
     private SimpleImage[] electroCardImages = new SimpleImage[3];
     private CardData[] goldenCards = new CardData[3];
     private SimpleImage[] goldenCardImages = new SimpleImage[3];
     private CardData[] yourCards = new CardData[3];
     private SimpleImage[] yourCardImages = new SimpleImage[3];
+    private CardData? yourPlayedCard;
+    private CardData? electroPlayedCard;
+    private bool yourPoints = false;
+    private bool electroPoints = false;
+    private bool yourTurn = true;
+    private int cardCount = 0;
     private int roundCount = 0;
     private Song bgm;
+    private Button[] yourCardButtons = new Button[3];
     private SimpleImage oscilatingOpacityImageReference;
     private bool goingUp = false;
 
@@ -64,12 +87,39 @@ public class TutorialState : GameState
         _components.Add(tutoBg);
         #endregion
 
+        #region Buttons
+        yourCardButtons[0] = new Button(Game, new Rectangle(265, 700, 88, 124), enabled: false, hasHover: false);
+        yourCardButtons[1] = new Button(Game, new Rectangle(400, 700, 88, 124), enabled: false, hasHover: false);
+        yourCardButtons[2] = new Button(Game, new Rectangle(535, 700, 88, 124), enabled: false, hasHover: false);
+        _components.Add(yourCardButtons[0]);
+        _components.Add(yourCardButtons[1]);
+        _components.Add(yourCardButtons[2]);
+        #endregion
+
         #region Audios
         vo1 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo1");
         vo2 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo2");
         vo3 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo3");
         vo4 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo4");
         vo5 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo5");
+        /*
+        vo6 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo6");
+        vo7 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo7");
+        vo8 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo8");
+        vo9 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo9");
+        vo10 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo10");
+        vo11 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo11");
+        vo12 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo12");
+        vo13 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo13");
+        vo14 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo14");
+        vo15 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo15");
+        vo16 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo16");
+        vo17 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo17");
+        vo18 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo18");
+        vo19 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo19");
+        vo20 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo20");
+        vo21 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo21");
+        */
         bgm = Game.Content.Load<Song>(@"Audio\Tutorial\bgm");
         #endregion
 
@@ -83,6 +133,9 @@ public class TutorialState : GameState
     {
         base.Initialize();
         MediaPlayer.Stop();
+        yourCardButtons[0].LeftClicked += PlayCard;
+        yourCardButtons[1].LeftClicked += PlayCard;
+        yourCardButtons[2].LeftClicked += PlayCard;
         IntroSequence();
     }
 
@@ -189,7 +242,17 @@ public class TutorialState : GameState
         await Task.Delay(500);
         Game.Window.Title = "La Podrida 2 - Tutorial";
         ccText.Position = new Vector2(400f, 50f);
+        ccText.Color = new Color(0x00, 0x97, 0x9D);
+        ccText.Text = "Well, it starts easy, each player gets 3 cards.";
+        //vo6.Play();
+
         ElectroHandOut();
+
+
+
+        yourCardButtons[0].Enabled = true;
+        yourCardButtons[1].Enabled = true;
+        yourCardButtons[2].Enabled = true;
     }
 
     private async void ElectroHandOut()
@@ -199,7 +262,7 @@ public class TutorialState : GameState
             yourCardImages[i].Visible = true;
             while (yourCardImages[i].Position.Y < 550)
             {
-                yourCardImages[i].Position += new Vector2(3 * (i-1), 10f);
+                yourCardImages[i].Position += new Vector2(1.5f * (i-1), 20f);
                 await Task.Delay(17);
             }
             electroCardImages[i].Visible = true;
@@ -208,6 +271,9 @@ public class TutorialState : GameState
                 await Task.Delay(17);
             }
         }
+        ccText.Text = "Then 3 cards are placed in the middle.";
+        //vo7.Play();
+        await Task.Delay(3000);
         for (int i = 0; i < 3; i++)
         {
             goldenCardImages[i].Visible = true;
@@ -216,6 +282,13 @@ public class TutorialState : GameState
                 goldenCardImages[i].Position += new Vector2(4.5f * (i-1), 10f);
                 await Task.Delay(17);
             }
+        }
+        deck.Position = new Vector2(400f, 100f);
+        deck.Visible = true;
+        while (deck.Position.Y < 400)
+        {
+            deck.Position += new Vector2(-9f, 10f);
+            await Task.Delay(17);
         }
 
         CardsCreate();
@@ -237,11 +310,15 @@ public class TutorialState : GameState
         yourCards[0].IsFaceUp = true;
         yourCards[1].IsFaceUp = true;
         yourCards[2].IsFaceUp = true;
-        goldenCards[0].IsFaceUp = true;
         yourCardImages[0].ChangeAnimatedTexture(yourCards[0].GetTexture().Key, yourCards[0].GetTexture().Value);
         yourCardImages[1].ChangeAnimatedTexture(yourCards[1].GetTexture().Key, yourCards[1].GetTexture().Value);
         yourCardImages[2].ChangeAnimatedTexture(yourCards[2].GetTexture().Key, yourCards[2].GetTexture().Value);
+        
+
+
+        goldenCards[0].IsFaceUp = true;
         goldenCardImages[0].ChangeAnimatedTexture(goldenCards[0].GetTexture().Key, goldenCards[0].GetTexture().Value);
+        yourTurn = true;
     }
 
     private void CardsCreate()
@@ -250,22 +327,47 @@ public class TutorialState : GameState
         {
             Y:
             var y = CardData.CreateRandom(false);
-            if (yourCards.Any(x => x.Value == y.Value && x.Suit == y.Suit) || electroCards.Any(x => x.Value == y.Value && x.Suit == y.Suit))
+            if (yourCards.Any(x => x.Value == y.Value && x.Suit == y.Suit) || electroCards.Any(x => x?.Value == y.Value && x?.Suit == y.Suit))
                 goto Y;
             yourCards[i] = y;
             E:
             var e = CardData.CreateRandom(false);
-            if (yourCards.Any(x => x.Value == e.Value && x.Suit == e.Suit) || electroCards.Any(x => x.Value == e.Value && x.Suit == e.Suit))
+            if (yourCards.Any(x => x.Value == e.Value && x.Suit == e.Suit) || electroCards.Any(x => x?.Value == e.Value && x?.Suit == e.Suit))
                 goto E;
             electroCards[i] = e;
         }
+        electroCards = electroCards.OrderBy(x => x.Value).ToArray();
         for (int i = 0; i < 3; i++)
         {
             G:
             var g = CardData.CreateRandom(true);
-            if (yourCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || electroCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || goldenCards.Any(x => x.Value == g.Value && x.Suit == g.Suit))
+            if (yourCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || electroCards.Any(x => x?.Value == g.Value && x?.Suit == g.Suit) || goldenCards.Any(x => x.Value == g.Value && x.Suit == g.Suit))
                 goto G;
             goldenCards[i] = g;
         }
+    }
+
+    private void PlayCard(object sender, EventArgs e)
+    {
+        (sender as Button).Enabled = false;
+        var cardIndex = yourCardButtons.ToList().IndexOf(sender as Button);
+
+        if (electroPlayedCard is null)
+            ElectroPlayCard();
+
+    }
+
+    private void ElectroPlayCard()
+    {
+        CardData c = (CardData)electroCards.FirstOrDefault((x => x?.Suit == goldenCards[roundCount].Suit), electroCards.First(x => x is not null));
+        c.IsFaceUp = true;
+        electroCardImages[Array.IndexOf(electroCards, c)].Position = new Vector2(265 + 135 * roundCount, 250f);
+        electroCards[Array.IndexOf(electroCards, c)] = null;
+        electroPlayedCard = c;
+    }
+
+    private void EvaluateRound()
+    {
+
     }
 }

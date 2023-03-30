@@ -156,9 +156,9 @@ public class MenuState : GameState
 
         #region TextComponents
         var romanAlexander = Game.Content.Load<SpriteFont>(@"Other\romanAlexander");
-        musicText = new TextComponent(Game, romanAlexander, $"{Configs.MusicVolume}", new Vector2(600, 350), 9, false, Alignment.Center, scale: 3f);
-        sfxText = new TextComponent(Game, romanAlexander, $"{Configs.SfxVolume}", new Vector2(600, 500), 9, false, Alignment.Center, scale: 3f);
-        ccText = new TextComponent(Game, Game.Content.Load<SpriteFont>(@"Other\consolas"), "I don't know what else you expected to find here..", new Vector2(400, 750), 9, false, Alignment.Center, scale: 1f);
+        musicText = new TextComponent(Game, romanAlexander, $"{Configs.MusicVolume}", new Vector2(600, 350), 9, false, Alignment.Center);
+        sfxText = new TextComponent(Game, romanAlexander, $"{Configs.SfxVolume}", new Vector2(600, 500), 9, false, Alignment.Center);
+        ccText = new TextComponent(Game, Game.Content.Load<SpriteFont>(@"Other\consolas"), "I don't know what else you expected to find here..", new Vector2(400, 750), 9, false, Alignment.Center);
         _components.Add(musicText);
         _components.Add(sfxText);
         _components.Add(ccText);
@@ -413,6 +413,7 @@ public class MenuState : GameState
 
     private async void PlayButton_Clicked(object sender, EventArgs e)
     {
+        Configs.CloseFile();
         click.Play();
 
         playButton.Enabled = false;

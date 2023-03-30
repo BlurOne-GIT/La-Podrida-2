@@ -57,7 +57,7 @@ public class Game1 : Game
 
         // TODO: use this.Content to load your game content here
         //SwitchGameState(new MenuState(this));
-        /* DEBUG */ SwitchGameState(new TutorialState(this));
+        /* DEBUG */ SwitchGameState(new CasinoState(this));
     }
 
     protected override void Update(GameTime gameTime)
