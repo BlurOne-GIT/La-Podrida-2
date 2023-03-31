@@ -26,6 +26,7 @@ public class CasinoState : GameState
     private SimpleImage[] goldenCardImages = new SimpleImage[3];
     private CardData[] yourCards;
     private SimpleImage[] yourCardImages = new SimpleImage[3];
+    private CardData[] dejavuCards;
     private int yourPlayedCard = -1;
     private int electroPlayedCard = -1;
     private int yourPoints = 0;
@@ -228,27 +229,16 @@ public class CasinoState : GameState
         {
             if (handCount is 0) Decker(null, null);
             YourHandOut();
-        } else if (handCount == 3)
-        {
-
-        } else if (handCount == 5)
-        {
-
-        } else 
-        {
+        } else
             ElectroHandOut();
-        }
     }
 
     private void YourHandOut()
     {
         for (int i = 0; i < 3; i++)
         {
-            yourCardImages[i].Visible = true;
             yourCardImages[i].Position = new Vector2(400f, 700f);
-            electroCardImages[i].Visible = true;
             electroCardImages[i].Position = new Vector2(400f, 700f);
-            goldenCardImages[i].Visible = true;
             goldenCardImages[i].Position = new Vector2(400f, 700f);
         }
         deckButton.Enabled = true;
@@ -335,30 +325,35 @@ public class CasinoState : GameState
             oscilatingOpacityImageReference = cardPlacerButtons[index+1].Image;
         }
         
-
         if (index > 5)
         {
+            goldenCardImages[index-6].DrawOrder = 9;
             goldenCardImages[index-6].Visible = true;
             while (goldenCardImages[index-6].Position.Y > 400f)
             {
                 goldenCardImages[index-6].Position += new Vector2(4.5f * (index-7), -10f);
                 await Task.Delay(17);
             }
+            goldenCardImages[index-6].DrawOrder = 7;
         } else if (index % 2 == 0)
         {
+            electroCardImages[index/2].DrawOrder = 9;
             electroCardImages[index/2].Visible = true;
             while (electroCardImages[index/2].Position.Y > 250) {
                 electroCardImages[index/2].Position += new Vector2(3f * (index/2-1), -10f);
                 await Task.Delay(17);
             }
+            electroCardImages[index/2].DrawOrder = 6;
         } else
         {
-            yourCardImages[(index-1)/2].Visible = true;
+            yourCardImages[index/2].DrawOrder = 9;
+            yourCardImages[index/2].Visible = true;
             while (yourCardImages[index/2].Position.Y > 550)
             {
                 yourCardImages[index/2].Position += new Vector2(9f * ((index-1)/2-1), -10f);
                 await Task.Delay(17);
             }
+            yourCardImages[index/2].DrawOrder = 8;
         }
     }
 
@@ -370,33 +365,36 @@ public class CasinoState : GameState
             deck.Position += new Vector2(9f, -10f);
             await Task.Delay(17);
         }
-        while (deck.Position.Y > 92)
+        while (deck.Position.Y < 108)
         {
-            deck.Position += new Vector2(0f, -1f);
+            deck.Position += new Vector2(0f, 1f);
             await Task.Delay(17);
         }
         for (int i = 0; i < 3; i++)
         {
-            yourCardImages[i].Visible = true;
             yourCardImages[i].Position = new Vector2(400f, 100f);
-            electroCardImages[i].Visible = true;
             electroCardImages[i].Position = new Vector2(400f, 100f);
-            goldenCardImages[i].Visible = true;
             goldenCardImages[i].Position = new Vector2(400f, 100f);
         }
         for (int i = 0; i < 3; i++)
         {
             yourCardImages[i].Visible = true;
+            int oldPos = yourCardImages[i].DrawOrder;
+            yourCardImages[i].DrawOrder = 9;
             while (yourCardImages[i].Position.Y < 550)
             {
                 yourCardImages[i].Position += new Vector2(3f * (i-1), 10f);
                 await Task.Delay(17);
             }
+            yourCardImages[i].DrawOrder = oldPos;
             electroCardImages[i].Visible = true;
+            oldPos = electroCardImages[i].DrawOrder;
+            electroCardImages[i].DrawOrder = 9;
             while (electroCardImages[i].Position.Y < 250) {
                 electroCardImages[i].Position += new Vector2(9 * (i-1), 10f);
                 await Task.Delay(17);
             }
+            electroCardImages[i].DrawOrder = oldPos;
         }
         for (int i = 0; i < 3; i++)
         {
@@ -408,14 +406,23 @@ public class CasinoState : GameState
             }
         }
         deck.Position = new Vector2(400f, 100f);
-        deck.Visible = true;
-        while (deck.Position.Y < 400)
+        if (handCount is not 8)
         {
-            deck.Position += new Vector2(-9f, 10f);
-            await Task.Delay(17);
+            deck.Visible = true;
+            deck.DrawOrder = 9;
+            while (deck.Position.Y < 400)
+            {
+                deck.Position += new Vector2(-9f, 10f);
+                await Task.Delay(17);
+            }
+            deck.DrawOrder = 8;
         }
 
-        CreateCards();
+        if (handCount != 3 && handCount != 5)
+            CreateCards();
+        else
+            CheatedCreateCards();
+
         while (yourCardImages[0].Position.Y < 700)
         {
             yourCardImages[0].Position += new Vector2(0f, 5f);
@@ -442,6 +449,10 @@ public class CasinoState : GameState
 
         goldenCards[0].IsFaceUp = true;
         goldenCardImages[0].ChangeAnimatedTexture(goldenCards[0].GetTexture().Key, goldenCards[0].GetTexture().Value);
+    
+        yourCardButtons[0].Enabled = true;
+        yourCardButtons[1].Enabled = true;
+        yourCardButtons[2].Enabled = true;
     }
 
     private void CreateCards()
@@ -471,6 +482,64 @@ public class CasinoState : GameState
                 goto G;
             goldenCards[i] = g;
         }
+        if (handCount is 0) dejavuCards = yourCards;
+    }
+    
+    private void CheatedCreateCards()
+    {
+        yourCards = handCount is 5 ? dejavuCards : new CardData[3];
+        if (handCount is not 5)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                G:
+                var g = CardData.CreateRandom(true);
+                if (goldenCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || yourCards.Any(x => x.Value == g.Value && x.Suit == g.Suit))
+                    goto G;
+                goldenCards[i] = g;
+            }
+        } 
+        else
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                int value = 1;
+                H:
+                var g = new CardData(value, goldenCards[i].Suit, true);
+                if (goldenCards.Any(x => x.Value == g.Value && x.Suit == g.Suit) || yourCards.Any(x => x.Value == g.Value && x.Suit == g.Suit))
+                {
+                    if (value is 1)
+                        value = 14;
+                    value--;
+                    goto H;
+                }
+                goldenCards[i] = g;
+            }
+        }
+        electroCards = new CardData[3];
+        for (int i = 0; i < 3; i++)
+        {
+            int value = 13;
+            E:
+            if (goldenCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit) || yourCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit) || electroCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit))
+            {
+                value--;
+                goto E;
+            }
+            electroCards[i] = new CardData(value, goldenCards[i].Suit, false);
+        }
+        if (handCount is not 5)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                Y:
+                var y = CardData.CreateRandom(false);
+                if (yourCards.Any(x => x.Value == y.Value && x.Suit == y.Suit) || electroCards.Any(x => x.Value == y.Value && x.Suit == y.Suit) || goldenCards.Any(x => x.Value == y.Value && x.Suit == y.Suit))
+                    goto Y;
+                yourCards[i] = y;
+            }
+        }
+        electroCards = electroCards.OrderBy(x => x.Value).ToArray();
     }
 
     private void PlayCard(object sender, EventArgs e)
