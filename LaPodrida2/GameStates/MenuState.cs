@@ -90,14 +90,14 @@ public class MenuState : GameState
         {
             bgframes.Add(new Rectangle(i, i, 800, 800));
         }
-        bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\bg"), new Vector2(0, 0), 0, visible: false, anchor: Alignment.TopLeft, animation: new Animation<Rectangle>(bgframes.ToArray(), true));
+        bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\bg"), Vector2.Zero, 0, visible: false, anchor: Alignment.TopLeft, animation: new Animation<Rectangle>(bgframes.ToArray(), true));
         bgframes = new List<Rectangle>();
         for (int i = 0; i < 800; i++)
         {
             bgframes.Add(new Rectangle(-i, i, 800, 800));
         }
-        bg2 = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\shuttercock"), new Vector2(0, 0), 8, visible: false, anchor: Alignment.TopLeft, animation: new Animation<Rectangle>(bgframes.ToArray(), true));
-        filler = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\filler"), new Vector2(0, 0), 10, visible: false, scale: 800, anchor: Alignment.TopLeft);
+        bg2 = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\shuttercock"), Vector2.Zero, 8, visible: false, anchor: Alignment.TopLeft, animation: new Animation<Rectangle>(bgframes.ToArray(), true));
+        filler = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\filler"), Vector2.Zero, 10, visible: false, scale: 800, anchor: Alignment.TopLeft);
         musicSprite = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\Music"), new Vector2(350, 350), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(400, 100), new Point(400, 200), true, 30));
         sfxSprite = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\Sfx"), new Vector2(350, 500), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(400, 100), new Point(400, 200), true, 30));
         _components.Add(logo);
@@ -117,11 +117,11 @@ public class MenuState : GameState
         singleplayerButton = new Button(Game, new Rectangle(220, 475, 300, 400), new SimpleImage(Game, singleplayerTexture, new Vector2(220, 475), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(300, 400), new Point(600, 400), true, 30), scale: 2f), enabled: false, hasHover: true);
         multiplayerButton = new Button(Game, new Rectangle(580, 475, 300, 400), new SimpleImage(Game, multiplayerTexture, new Vector2(580, 475), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(300, 400), new Point(600, 400), true, 30), scale: 2f), enabled: false, hasHover: true);
         Texture2D texture = Game.Content.Load<Texture2D>(@"Textures\Menu\Minus");
-        musicMinusButton = new Button(Game, new Rectangle(100, 350, 100, 100), new SimpleImage(Game, texture, new Vector2(100, 350), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(100, 100), new Point(100, 200), true, 30)), enabled: false, hasHover: true);
-        sfxMinusButton = new Button(Game, new Rectangle(100, 500, 100, 100), new SimpleImage(Game, texture, new Vector2(100, 500), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(100, 100), new Point(100, 200), true, 30)), enabled: false, hasHover: true);
+        musicMinusButton = new Button(Game, new Rectangle(100, 350, 100, 100), new SimpleImage(Game, texture, new Vector2(100, 350), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30)), enabled: false, hasHover: true);
+        sfxMinusButton = new Button(Game, new Rectangle(100, 500, 100, 100), new SimpleImage(Game, texture, new Vector2(100, 500), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30)), enabled: false, hasHover: true);
         texture = Game.Content.Load<Texture2D>(@"Textures\Menu\Plus");
-        musicPlusButton = new Button(Game, new Rectangle(700, 350, 100, 100), new SimpleImage(Game, texture, new Vector2(700, 350), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(100, 100), new Point(100, 200), true, 30)), enabled: false, hasHover: true);
-        sfxPlusButton = new Button(Game, new Rectangle(700, 500, 100, 100), new SimpleImage(Game, texture, new Vector2(700, 500), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(100, 100), new Point(100, 200), true, 30)), enabled: false, hasHover: true);
+        musicPlusButton = new Button(Game, new Rectangle(700, 350, 100, 100), new SimpleImage(Game, texture, new Vector2(700, 350), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30)), enabled: false, hasHover: true);
+        sfxPlusButton = new Button(Game, new Rectangle(700, 500, 100, 100), new SimpleImage(Game, texture, new Vector2(700, 500), 9, false, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30)), enabled: false, hasHover: true);
         _components.Add(playButton);
         _components.Add(configButton);
         _components.Add(exitButton);

@@ -13,32 +13,37 @@ namespace LaPodrida2;
 
 public class CasinoState : GameState
 {
+    private Texture2D back;
     private SimpleImage bg;
     private SimpleImage table;
     private SimpleImage deck;
     private SimpleImage map;
     private SimpleImage gameBg;
     private TextComponent ccText;
-    private CardData[] electroCards = new CardData[3];
+    private CardData[] electroCards;
     private SimpleImage[] electroCardImages = new SimpleImage[3];
-    private CardData[] goldenCards = new CardData[3];
+    private CardData[] goldenCards;
     private SimpleImage[] goldenCardImages = new SimpleImage[3];
-    private CardData[] yourCards = new CardData[3];
+    private CardData[] yourCards;
     private SimpleImage[] yourCardImages = new SimpleImage[3];
-    private int yourPlayedCard;
-    private int electroPlayedCard;
+    private int yourPlayedCard = -1;
+    private int electroPlayedCard = -1;
     private int yourPoints = 0;
     private int electroPoints = 0;
     private bool yourRounds = false;
     private bool electroRounds = false;
-    private bool yourTurn = true;
     private int roundCount = 0;
     private int handCount = 0;
+    private Song streetShit;
     private Song bgm;
     private Button[] yourCardButtons = new Button[3];
     private Button deckButton;
     private Button[] cardPlacerButtons = new Button[9];
     private SimpleImage oscilatingOpacityImageReference;
+    private SimpleImage plus1;
+    private SimpleImage plus2;
+    private SimpleImage equal;
+    private TextComponent roundResult;
     private bool goingUp = false;
 
 
@@ -47,7 +52,7 @@ public class CasinoState : GameState
     public override void LoadContent()
     {
         #region Textures
-        Texture2D back = Game.Content.Load<Texture2D>(@"Textures\Cards\back_red");
+        back = Game.Content.Load<Texture2D>(@"Textures\Cards\back_red");
         CardData.LoadTextures(Game.Content, true);
         #endregion
 
@@ -93,38 +98,23 @@ public class CasinoState : GameState
             _components.Add(cardPlacerButtons[i+1]);
             _components.Add(cardPlacerButtons[i/2 + 6]);
         }
+        plus1 = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\plus"), new Vector2(333f, 400f), 10, visible: false, scale: .5f, color: Color.Black, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30));
+        plus2 = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\plus"), new Vector2(467f, 400f), 10, visible: false, scale: .5f, color: Color.Black, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30));
+        equal = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\equals"), new Vector2(602f, 400f), 10, visible: false, scale: .5f, animation: Animation<Rectangle>.TextureAnimation(new Point(135), new Point(270, 135), true, 30));
+        _components.Add(plus1);
+        _components.Add(plus2);
+        _components.Add(equal);
         #endregion
 
         #region Audios
-        /*
-        vo1 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo1");
-        vo2 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo2");
-        vo3 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo3");
-        vo4 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo4");
-        vo5 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo5");
-        vo6 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo6");
-        vo7 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo7");
-        vo8 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo8");
-        vo9 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo9");
-        vo10 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo10");
-        vo11 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo11");
-        vo12 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo12");
-        vo13 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo13");
-        vo14 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo14");
-        vo15 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo15");
-        vo16 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo16");
-        vo17 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo17");
-        vo18 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo18");
-        vo19 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo19");
-        vo20 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo20");
-        vo21 = Game.Content.Load<SoundEffect>(@"Audio\Tutorial\vo21");
-        */
-        MediaPlayer.Play(Game.Content.Load<Song>(@"Audio\Casino\street"));
+        streetShit = Game.Content.Load<Song>(@"Audio\Casino\street");
         bgm = Game.Content.Load<Song>(@"Audio\Casino\bgm");
         #endregion
 
         #region TextComponents
+        roundResult = new TextComponent(Game, Game.Content.Load<SpriteFont>(@"Other\romanAlexander"), "", new Vector2(670f, 400f), 10, anchor: Alignment.Center, color: Color.Black, visible: false);
         ccText = new TextComponent(Game, Game.Content.Load<SpriteFont>(@"Other\consolas"), "", new Vector2(400f, 750f), 10, anchor: Alignment.Center);
+        _components.Add(roundResult);
         _components.Add(ccText);
         #endregion
     }
@@ -178,6 +168,7 @@ public class CasinoState : GameState
             bg.Position += new Vector2(0f, -5f);
             await Task.Delay(17);
         }
+        MediaPlayer.Play(streetShit);
 
         map.Animation.Start();
         while (map.Position.Y > 100f)
@@ -220,6 +211,8 @@ public class CasinoState : GameState
                 deck.Position += new Vector2(0f, 1f);
             await Task.Delay(17);
         }
+        bg.Visible = false;
+        table.Visible = false;
         deck.Position = new Vector2(400f, 708f);
 
         MediaPlayer.Play(bgm);
@@ -275,14 +268,17 @@ public class CasinoState : GameState
                     deck.Position += new Vector2(9f, 10f);
                     await Task.Delay(17);
                 }
+            
+            deck.DrawOrder = 5;
             cardPlacerButtons[0].Enabled = true;
             cardPlacerButtons[0].Image.Visible = true;
             oscilatingOpacityImageReference = cardPlacerButtons[0].Image;
             return;
         }
 
+        deck.DrawOrder = 9;
+
         oscilatingOpacityImageReference = null;
-        deck.Visible = true;
         while (deck.Position.Y > 400)
         {
             deck.Position += new Vector2(-9f, -10f);
@@ -310,6 +306,9 @@ public class CasinoState : GameState
         yourCardImages[0].ChangeAnimatedTexture(yourCards[0].GetTexture().Key, yourCards[0].GetTexture().Value);
         yourCardImages[1].ChangeAnimatedTexture(yourCards[1].GetTexture().Key, yourCards[1].GetTexture().Value);
         yourCardImages[2].ChangeAnimatedTexture(yourCards[2].GetTexture().Key, yourCards[2].GetTexture().Value);
+
+        goldenCards[0].IsFaceUp = true;
+        goldenCardImages[0].ChangeAnimatedTexture(goldenCards[0].GetTexture().Key, goldenCards[0].GetTexture().Value);
 
         ElectroPlayCard();
     }
@@ -365,6 +364,26 @@ public class CasinoState : GameState
 
     private async void ElectroHandOut()
     {
+        deck.DrawOrder = 5;
+        while (deck.Position.Y > 100)
+        {
+            deck.Position += new Vector2(9f, -10f);
+            await Task.Delay(17);
+        }
+        while (deck.Position.Y > 92)
+        {
+            deck.Position += new Vector2(0f, -1f);
+            await Task.Delay(17);
+        }
+        for (int i = 0; i < 3; i++)
+        {
+            yourCardImages[i].Visible = true;
+            yourCardImages[i].Position = new Vector2(400f, 100f);
+            electroCardImages[i].Visible = true;
+            electroCardImages[i].Position = new Vector2(400f, 100f);
+            goldenCardImages[i].Visible = true;
+            goldenCardImages[i].Position = new Vector2(400f, 100f);
+        }
         for (int i = 0; i < 3; i++)
         {
             yourCardImages[i].Visible = true;
@@ -423,11 +442,13 @@ public class CasinoState : GameState
 
         goldenCards[0].IsFaceUp = true;
         goldenCardImages[0].ChangeAnimatedTexture(goldenCards[0].GetTexture().Key, goldenCards[0].GetTexture().Value);
-        yourTurn = true;
     }
 
     private void CreateCards()
     {   
+        yourCards = new CardData[3];
+        electroCards = new CardData[3];
+        goldenCards = new CardData[3];
         for (int i = 0; i < 3; i++)
         {
             Y:
@@ -457,7 +478,9 @@ public class CasinoState : GameState
         yourCardButtons[0].Enabled = false;
         yourCardButtons[1].Enabled = false;
         yourCardButtons[2].Enabled = false;
-        int cardIndex = yourCardButtons.ToList().IndexOf(sender as Button);
+        yourPlayedCard = yourCardButtons.ToList().IndexOf(sender as Button);
+        yourCards[yourPlayedCard].Used = true;
+        yourCardImages[yourPlayedCard].Position = new Vector2(265 + 135 * roundCount, 550f);
 
         if (electroPlayedCard is -1)
             ElectroPlayCard();
@@ -471,11 +494,11 @@ public class CasinoState : GameState
         electroCards[electroPlayedCard].IsFaceUp = true;
         electroCardImages[electroPlayedCard].ChangeAnimatedTexture(electroCards[electroPlayedCard].GetTexture().Key, electroCards[electroPlayedCard].GetTexture().Value);
         electroCardImages[electroPlayedCard].Position = new Vector2(265 + 135 * roundCount, 250f);
+        electroCardImages[electroPlayedCard].Visible = true;
         electroCards[electroPlayedCard].Used = true;
 
         if (yourPlayedCard is -1)
         {
-            yourTurn = true;
             for (int i = 0; i < 3; i++)
                 if (!yourCards[i].Used)
                     yourCardButtons[i].Enabled = true;
@@ -489,8 +512,8 @@ public class CasinoState : GameState
         if (yourCards[yourPlayedCard].Value == electroCards[electroPlayedCard].Value)
             HandleScore(handCount % 2 == 1);
 
-        int yourValue = yourCards[yourPlayedCard].Points + yourCards[yourPlayedCard].Suit == goldenCards[roundCount].Suit ? 100 : 0;
-        int electroValue = electroCards[electroPlayedCard].Points + electroCards[electroPlayedCard].Suit == goldenCards[roundCount].Suit ? 100 : 0;
+        int yourValue = yourCards[yourPlayedCard].Points + (yourCards[yourPlayedCard].Suit == goldenCards[roundCount].Suit ? 100 : 0);
+        int electroValue = electroCards[electroPlayedCard].Points + (electroCards[electroPlayedCard].Suit == goldenCards[roundCount].Suit ? 100 : 0);
         
         HandleScore(yourValue > electroValue);
     }
@@ -504,7 +527,7 @@ public class CasinoState : GameState
             if (yourRounds)
             {
                 yourPoints += goldenCards[0].Points + goldenCards[1].Points + (goldenCards[2].IsFaceUp ? goldenCards[2].Points : 0);
-                EndRound();
+                EndRound(true);
                 return;
             }
             else
@@ -516,14 +539,13 @@ public class CasinoState : GameState
             if (electroRounds)
             {
                 electroPoints += goldenCards[0].Points + goldenCards[1].Points + (goldenCards[2].IsFaceUp ? goldenCards[2].Points : 0);
-                EndRound();
+                EndRound(false);
                 return;
             }
             else
                 electroRounds = true;
         }
-
-        yourTurn = youWon;
+        
         roundCount++;
         yourPlayedCard = -1;
         electroPlayedCard = -1;
@@ -531,16 +553,110 @@ public class CasinoState : GameState
         goldenCardImages[roundCount].ChangeAnimatedTexture(goldenCards[roundCount].GetTexture().Key, goldenCards[roundCount].GetTexture().Value);
         if (youWon)
         {
-
+            for (int i = 0; i < 3; i++)
+                if (!yourCards[i].Used)
+                    yourCardButtons[i].Enabled = true;
         }
         else
             ElectroPlayCard();
-
-
     }
 
-    private void EndRound()
+    private async void EndRound(bool youWon)
     {
+        handCount++;
+        plus1.Visible = true;
+        plus2.Visible = goldenCards[2].IsFaceUp;
+        equal.Visible = true;
+        roundResult.Text = $"{goldenCards[0].Points + goldenCards[1].Points + (goldenCards[2].IsFaceUp ? goldenCards[2].Points : 0)}";
+        roundResult.Visible = true;
 
+        await Task.Delay(3000);
+
+        bg.Visible = true;
+        table.Visible = true;
+        while (gameBg.Opacity > 0f)
+        {
+            if (roundResult.Position.Y != 400f - 250 * (youWon ? 1 : -1))
+                roundResult.Position += new Vector2(0f, 5f * (youWon ? 1 : -1));
+
+            gameBg.Opacity -= 0.02f;
+            deck.Opacity -= 0.02f;
+            yourCardImages[0].Opacity -= 0.02f;
+            yourCardImages[1].Opacity -= 0.02f;
+            yourCardImages[2].Opacity -= 0.02f;
+            electroCardImages[0].Opacity -= 0.02f;
+            electroCardImages[1].Opacity -= 0.02f;
+            electroCardImages[2].Opacity -= 0.02f;
+            goldenCardImages[0].Opacity -= 0.02f;
+            goldenCardImages[1].Opacity -= 0.02f;
+            goldenCardImages[2].Opacity -= 0.02f;
+            plus1.Opacity -= 0.02f;
+            plus2.Opacity -= 0.02f;
+            equal.Opacity -= 0.02f;
+            await Task.Delay(17);
+        }
+
+        gameBg.Visible = false;
+        deck.Visible = false;
+        yourCardImages[0].Visible = false;
+        yourCardImages[1].Visible = false;
+        yourCardImages[2].Visible = false;
+        electroCardImages[0].Visible = false;
+        electroCardImages[1].Visible = false;
+        electroCardImages[2].Visible = false;
+        goldenCardImages[0].Visible = false;
+        goldenCardImages[1].Visible = false;
+        goldenCardImages[2].Visible = false;
+        plus1.Visible = false;
+        plus2.Visible = false;
+        equal.Visible = false;
+
+        await Task.Delay(3000);
+
+        ResetTable();
+        gameBg.Visible = true;
+        deck.Visible = true;
+        while (gameBg.Opacity < 1f)
+        {
+            gameBg.Opacity += 0.02f;
+            deck.Opacity += 0.02f;
+            await Task.Delay(17);
+        }
+        bg.Visible = false;
+        table.Visible = false;
+        StateMachineHandler();
+    }
+
+    private void ResetTable()
+    {
+        roundResult.Visible = false;
+        roundResult.Position = new Vector2(670f, 400f);
+        deck.Position = new Vector2(130f, 400f);
+        yourCardImages[0].Opacity = 1f;
+        yourCardImages[1].Opacity = 1f;
+        yourCardImages[2].Opacity = 1f;
+        electroCardImages[0].Opacity = 1f;
+        electroCardImages[1].Opacity = 1f;
+        electroCardImages[2].Opacity = 1f;
+        goldenCardImages[0].Opacity = 1f;
+        goldenCardImages[1].Opacity = 1f;
+        goldenCardImages[2].Opacity = 1f;
+        plus1.Opacity = 1f;
+        plus2.Opacity = 1f;
+        equal.Opacity = 1f;
+        yourCardImages[0].ChangeTexture(back);
+        yourCardImages[1].ChangeTexture(back);
+        yourCardImages[2].ChangeTexture(back);
+        electroCardImages[0].ChangeTexture(back);
+        electroCardImages[1].ChangeTexture(back);
+        electroCardImages[2].ChangeTexture(back);
+        goldenCardImages[0].ChangeTexture(back);
+        goldenCardImages[1].ChangeTexture(back);
+        goldenCardImages[2].ChangeTexture(back);
+        yourRounds = false;
+        electroRounds = false;
+        yourPlayedCard = -1;
+        electroPlayedCard = -1;
+        roundCount = 0;
     }
 }
