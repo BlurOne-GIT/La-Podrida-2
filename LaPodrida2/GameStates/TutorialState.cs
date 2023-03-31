@@ -184,7 +184,6 @@ public class TutorialState : GameState
 
     private async void IntroSequence()
     {
-
         while (bg.Position.Y > 0)
         {
             bg.Position += new Vector2(0f, -5f);

@@ -26,13 +26,16 @@ public class MenuState : GameState
     private SoundEffect click;
     private SoundEffect error;
     private SoundEffect impact;
-    private SoundEffect vo1; // "Welcome to LA PODRIDA 2,"
-    private SoundEffect vo2; // "the long awaited sequel to the hit game LA PODRIDA 1."
-    private SoundEffect vo3; // "Well, let's get going, would you like to..."
-    private SoundEffect vo4; // "Play alone in singleplayer mode?"
-    private SoundEffect vo5; // "Or play with your friends in multiplayer mode?"
-    private SoundEffect vo6; // "Don't lie, you've got no friends."
-    private SoundEffect vo7; // "Fine, I guess you can play with me then."
+    private SoundEffect[] vo = new SoundEffect[6];
+    /*
+    00: "Welcome to LA PODRIDA 2,"
+    01: "the long awaited sequel to the hit game LA PODRIDA 1."
+    02: "Well, let's get going, would you like to..."
+    03: "Play alone in singleplayer mode?"
+    04: "Or play with your friends in multiplayer mode?"
+    05: "Don't lie, you've got no friends."
+    06: "Fine, I guess you can play with me then."
+    */
     private Song bgm;
     private Texture2D playTexture;
     private Texture2D playHoveredTexture;
@@ -145,13 +148,8 @@ public class MenuState : GameState
         hover = Game.Content.Load<SoundEffect>(@"Audio\Menu\select");
         error = Game.Content.Load<SoundEffect>(@"Audio\Menu\error");
         impact = Game.Content.Load<SoundEffect>(@"Audio\Menu\impact");
-        vo1 = Game.Content.Load<SoundEffect>(@"Audio\Menu\vo1");
-        vo2 = Game.Content.Load<SoundEffect>(@"Audio\Menu\vo2");
-        vo3 = Game.Content.Load<SoundEffect>(@"Audio\Menu\vo3");
-        vo4 = Game.Content.Load<SoundEffect>(@"Audio\Menu\vo4");
-        vo5 = Game.Content.Load<SoundEffect>(@"Audio\Menu\vo5");
-        vo6 = Game.Content.Load<SoundEffect>(@"Audio\Menu\vo6");
-        vo7 = Game.Content.Load<SoundEffect>(@"Audio\Menu\vo7");
+        for (int i = 0; i < 7; i++)
+            vo[i] = Game.Content.Load<SoundEffect>($@"Audio\Menu\vo{i + 1}");
         #endregion
 
         #region TextComponents
@@ -425,19 +423,19 @@ public class MenuState : GameState
 
         await Task.Delay(500);
 
-        vo1.Play();
+        vo[0].Play();
         ccText.Visible = true;
         ccText.Text = "Welcome to LA PODRIDA 2,";
-        await Task.Delay(vo1.Duration + TimeSpan.FromMilliseconds(200));
-        vo2.Play();
+        await Task.Delay(vo[0].Duration + TimeSpan.FromMilliseconds(200));
+        vo[1].Play();
         ccText.Text = "the long awaited sequel to the hit game LA PODRIDA 1.";
-        await Task.Delay(vo2.Duration + TimeSpan.FromMilliseconds(500));
-        vo3.Play();
+        await Task.Delay(vo[1].Duration + TimeSpan.FromMilliseconds(500));
+        vo[2].Play();
         ccText.Text = "Well, let's get going, would you like to...";
-        await Task.Delay(vo3.Duration + TimeSpan.FromMilliseconds(200));
-        vo4.Play();
+        await Task.Delay(vo[2].Duration + TimeSpan.FromMilliseconds(200));
+        vo[3].Play();
         ccText.Text = "Play alone in singleplayer mode?";
-        await Task.Delay(vo4.Duration);
+        await Task.Delay(vo[3].Duration);
         singleplayerButton.Image.Opacity = 0;
         singleplayerButton.Image.Visible = true;
         while (singleplayerButton.Image.Scale > 1)
@@ -449,9 +447,9 @@ public class MenuState : GameState
         }
         impact.Play();
         await Task.Delay(impact.Duration);
-        vo5.Play();
+        vo[4].Play();
         ccText.Text = "Or play with your friends in multiplayer mode?";
-        await Task.Delay(vo5.Duration);
+        await Task.Delay(vo[4].Duration);
         multiplayerButton.Image.Opacity = 0;
         multiplayerButton.Image.Visible = true;
         while (multiplayerButton.Image.Scale > 1)
@@ -578,14 +576,14 @@ public class MenuState : GameState
     private async void MultiplayerButton_Clicked(object sender, EventArgs e)
     {
         error.Play();
-        vo6.Play();
+        vo[5].Play();
         singleplayerButton.Enabled = false;
         multiplayerButton.Enabled = false;
         MultiplayerButton_Unhovered(sender, e);
         multiplayerButton.Image.Color = new Color(0.75f, 0.75f, 0.75f);
         multiplayerButton.Image.Opacity = 0.75f;
         ccText.Text = "Don't lie, you've got no friends.";
-        await Task.Delay(vo6.Duration);
+        await Task.Delay(vo[5].Duration);
         singleplayerButton.Enabled = true;
         ccText.Text = "";
     }
@@ -610,9 +608,9 @@ public class MenuState : GameState
 
 
         click.Play();
-        vo7.Play();
+        vo[6].Play();
         ccText.Text = "Fine, I guess you can play with me then.";
-        await Task.Delay(vo7.Duration);
+        await Task.Delay(vo[6].Duration);
 
 
         while (bg.Position.Y > -800)

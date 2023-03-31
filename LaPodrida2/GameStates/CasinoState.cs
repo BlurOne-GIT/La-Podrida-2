@@ -46,6 +46,44 @@ public class CasinoState : GameState
     private SimpleImage equal;
     private TextComponent roundResult;
     private bool goingUp = false;
+    private SoundEffect cardSound;
+    private SoundEffect[] vo = new SoundEffect[5];
+    /*
+    00: "Well, here we are, the casino."
+    01: "Yes, it's an outdoor casino, stop complaining about everything."
+    02: "Whatever, I'll go inside and sign us up for the tournament."
+    03: "Hey, check it out!"
+    04: "We've gotta play against each other in the first round."
+    05: "I'm gonna win, of course."
+    06: "Ohh, don't be sad, I'll give you 1% of the prize!"
+    07: "So, what are we waiting for, let's start!"
+    08: "Come on, hand out the last round..."
+    09: "Where did the deck go?"
+    10: "Don't look at me, I didn't take it!"
+    11: "Woah, where did that come from?"
+    12: "WAIT, I'M NOT CHEATING, I SWEAR!"
+    13: "NO, CHORIZO NO!"
+    14: "OK, I ADMIT IT, I CHEATED, I CHEATED, STOP, PLEASE!"
+    */
+    private SoundEffect[] vo_win = new SoundEffect[6];
+    /*
+    00: "Off to a good start, I have the advantage."
+    01: "You're a noob, literally."
+    02: "You're bad, you're bad, you're bad!"
+    03: "That was sweet, thank you random number generator!"
+    04: "I'm gonna win this, I'm gonna win this, I'm gonna win this!"
+    05: "Dude, did you see my cards?! That was amazing!"
+    */
+    private SoundEffect[] vo_lose = new SoundEffect[6];
+    /*
+    00: "That's some begginers luck, I'll get you next time."
+    01: "I get it, I get it, but this round's gonna be mine."
+    02: "Once I win this, you're gonna be working for me!"
+    03: "Wha- Well you're lucky..."
+    04: "Ok, that's it, I'm crushing you this round!"
+    05: "HOW DID YOU GET THAT?! I WAS SUPPOSED TO WIN THAT!!!"
+    */
+
 
 
     public CasinoState(Game game) : base(game) {}
@@ -632,7 +670,6 @@ public class CasinoState : GameState
 
     private async void EndRound(bool youWon)
     {
-        handCount++;
         plus1.Visible = true;
         plus2.Visible = goldenCards[2].IsFaceUp;
         equal.Visible = true;
@@ -680,8 +717,23 @@ public class CasinoState : GameState
         plus2.Visible = false;
         equal.Visible = false;
 
-        await Task.Delay(3000);
+        if (youWon)
+        {
+            vo_lose[handCount].Play();
+            await Task.Delay(vo_lose[handCount].Duration);
+        }
+        else 
+        {
+            vo_win[handCount].Play();
+            await Task.Delay(vo_win[handCount].Duration);
+        }
 
+        if (handCount is 5)
+        {
+            return;
+        }
+
+        handCount++;
         ResetTable();
         gameBg.Visible = true;
         deck.Visible = true;
