@@ -94,7 +94,7 @@ public class SimpleImage : DrawableGameComponent
     public void ChangeAnimatedTexture(Texture2D texture, Animation<Rectangle> animation)
     {
         this.texture = texture;
-        Animation = animation;
+        Animation = animation ?? Animation;
         RelocatePivot();
     }
 

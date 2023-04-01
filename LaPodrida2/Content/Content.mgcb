@@ -13,17 +13,209 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin Audio/cardGrab.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/cardGrab.wav
+
+#begin Audio/cardPlace.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/cardPlace.wav
+
 #begin Audio/Casino/398159__inspectorj__ambience-london-street-a.wav
 /importer:WavImporter
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Audio/Casino/398159__inspectorj__ambience-london-street-a.wav;Audio/Casino/street.wav
 
+#begin Audio/Casino/vo0.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo0.wav
+
+#begin Audio/Casino/vo0lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo0lose.wav
+
+#begin Audio/Casino/vo0win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo0win.wav
+
+#begin Audio/Casino/vo1.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo1.wav
+
+#begin Audio/Casino/vo10.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo10.wav
+
+#begin Audio/Casino/vo11.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo11.wav
+
+#begin Audio/Casino/vo12.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo12.wav
+
+#begin Audio/Casino/vo13.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo13.wav
+
+#begin Audio/Casino/vo14.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo14.wav
+
+#begin Audio/Casino/vo1lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo1lose.wav
+
+#begin Audio/Casino/vo1win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo1win.wav
+
+#begin Audio/Casino/vo2.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo2.wav
+
+#begin Audio/Casino/vo2lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo2lose.wav
+
+#begin Audio/Casino/vo2win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo2win.wav
+
+#begin Audio/Casino/vo3.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo3.wav
+
+#begin Audio/Casino/vo3lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo3lose.wav
+
+#begin Audio/Casino/vo3win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo3win.wav
+
+#begin Audio/Casino/vo4.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo4.wav
+
+#begin Audio/Casino/vo4lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo4lose.wav
+
+#begin Audio/Casino/vo4win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo4win.wav
+
+#begin Audio/Casino/vo5.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo5.wav
+
+#begin Audio/Casino/vo5lose.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo5lose.wav
+
+#begin Audio/Casino/vo5win.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo5win.wav
+
+#begin Audio/Casino/vo6.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo6.wav
+
+#begin Audio/Casino/vo7.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo7.wav
+
+#begin Audio/Casino/vo8.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo8.wav
+
+#begin Audio/Casino/vo9.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Casino/vo9.wav
+
 #begin Audio/Casino/y2mate.com - Ape Escape 2 Skyscraper City.mp3
 /importer:Mp3Importer
 /processor:SongProcessor
 /processorParam:Quality=Best
 /build:Audio/Casino/y2mate.com - Ape Escape 2 Skyscraper City.mp3;Audio/Casino/bgm
+
+#begin Audio/deckGrab.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/deckGrab.wav
+
+#begin Audio/deckGrabShuffle.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/deckGrabShuffle.wav
+
+#begin Audio/deckPlace.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/deckPlace.wav
 
 #begin Audio/Menu/2.wav
 /importer:WavImporter
@@ -139,11 +331,83 @@
 /processorParam:Quality=Best
 /build:Audio/Tutorial/vo1.wav
 
+#begin Audio/Tutorial/vo10.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo10.wav
+
+#begin Audio/Tutorial/vo11.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo11.wav
+
+#begin Audio/Tutorial/vo12.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo12.wav
+
+#begin Audio/Tutorial/vo13.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo13.wav
+
+#begin Audio/Tutorial/vo14.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo14.wav
+
+#begin Audio/Tutorial/vo15.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo15.wav
+
+#begin Audio/Tutorial/vo16.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo16.wav
+
+#begin Audio/Tutorial/vo17.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo17.wav
+
+#begin Audio/Tutorial/vo18.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo18.wav
+
+#begin Audio/Tutorial/vo19.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo19.wav
+
 #begin Audio/Tutorial/vo2.wav
 /importer:WavImporter
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/Tutorial/vo2.wav
+
+#begin Audio/Tutorial/vo20.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo20.wav
+
+#begin Audio/Tutorial/vo21.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo21.wav
 
 #begin Audio/Tutorial/vo3.wav
 /importer:WavImporter
@@ -162,6 +426,30 @@
 /processor:SoundEffectProcessor
 /processorParam:Quality=Best
 /build:Audio/Tutorial/vo5.wav
+
+#begin Audio/Tutorial/vo6.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo6.wav
+
+#begin Audio/Tutorial/vo7.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo7.wav
+
+#begin Audio/Tutorial/vo8.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo8.wav
+
+#begin Audio/Tutorial/vo9.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Audio/Tutorial/vo9.wav
 
 #begin Other/consolas.spritefont
 /importer:FontDescriptionImporter

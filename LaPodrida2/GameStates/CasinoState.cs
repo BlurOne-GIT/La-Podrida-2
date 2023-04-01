@@ -14,11 +14,16 @@ namespace LaPodrida2;
 public class CasinoState : GameState
 {
     private Texture2D back;
+    private Texture2D angry;
+    private Texture2D laugh;
+    private Texture2D musculito;
+    private Texture2D sus;
     private SimpleImage bg;
     private SimpleImage table;
     private SimpleImage deck;
     private SimpleImage map;
     private SimpleImage gameBg;
+    private SimpleImage electro20;
     private TextComponent ccText;
     private CardData[] electroCards;
     private SimpleImage[] electroCardImages = new SimpleImage[3];
@@ -46,8 +51,13 @@ public class CasinoState : GameState
     private SimpleImage equal;
     private TextComponent roundResult;
     private bool goingUp = false;
-    private SoundEffect cardSound;
-    private SoundEffect[] vo = new SoundEffect[5];
+    private SoundEffect cardGrab;
+    private SoundEffect cardPlace;
+    private SoundEffect deckGrab;
+    private SoundEffect deckGrabShuffle;
+    private SoundEffect deckPlace;
+    // References set below vo, vo_win and vo_lose are for the corresponding ccText.Text strings per index
+    private SoundEffect[] vo = new SoundEffect[15];
     /*
     00: "Well, here we are, the casino."
     01: "Yes, it's an outdoor casino, stop complaining about everything."
@@ -66,25 +76,25 @@ public class CasinoState : GameState
     14: "OK, I ADMIT IT, I CHEATED, I CHEATED, STOP, PLEASE!"
     */
     private SoundEffect[] vo_win = new SoundEffect[6];
-    /*
-    00: "Off to a good start, I have the advantage."
-    01: "You're a noob, literally."
-    02: "You're bad, you're bad, you're bad!"
-    03: "That was sweet, thank you random number generator!"
-    04: "I'm gonna win this, I'm gonna win this, I'm gonna win this!"
-    05: "Dude, did you see my cards?! That was amazing!"
-    */
+    private string[] cc_win = new string[6]
+    {   
+        "Off to a good start, I have the advantage.",
+        "Hahaha, aperently you're unable to defeat an arduino!",
+        "If I won a dolar each time I beat someone like you,\nI'd be a billionaire right now.",
+        "That was sweet, thank you random number generator!",
+        "Who's laughing now?",
+        "Dude, did you see my cards?! That was amazing!"
+    };
     private SoundEffect[] vo_lose = new SoundEffect[6];
-    /*
-    00: "That's some begginers luck, I'll get you next time."
-    01: "I get it, I get it, but this round's gonna be mine."
-    02: "Once I win this, you're gonna be working for me!"
-    03: "Wha- Well you're lucky..."
-    04: "Ok, that's it, I'm crushing you this round!"
-    05: "HOW DID YOU GET THAT?! I WAS SUPPOSED TO WIN THAT!!!"
-    */
-
-
+    private string[] cc_lose = new string[6]
+    {
+        "That's some begginers luck, I'll get you next time.",
+        "Arduino not responding...",
+        "Segment Fault (Core Dumped)",
+        "Wha- Well you're lucky... Medibot failed...",
+        "Once this match is over, you're gonna be working for me!",
+        "HOW DID YOU GET THAT?! I WAS SUPPOSED TO WIN THAT!!!"
+    };
 
     public CasinoState(Game game) : base(game) {}
 
@@ -97,7 +107,7 @@ public class CasinoState : GameState
 
         #region SimpleImages
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
-        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\Table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter, scale: 1.5f);
+        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\Table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter);
         deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_red"), new Vector2(400f, -200f), 8);
         gameBg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\gameBg"), Vector2.Zero, 1, anchor: Alignment.TopLeft, visible: false, /*animation: Animation<Rectangle>.TextureAnimation(new Point(800, 800), new Point(1600, 800), true, 30),*/ opacity: 0f);
         map = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\map"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft, visible: true, animation: Animation<Rectangle>.TextureAnimation(new Point(800, 600), new Point(800, 1200), true, 30));
@@ -146,8 +156,21 @@ public class CasinoState : GameState
         #endregion
 
         #region Audios
+        cardGrab = Game.Content.Load<SoundEffect>(@"Audio\cardGrab");
+        cardPlace = Game.Content.Load<SoundEffect>(@"Audio\cardPlace");
+        deckGrab = Game.Content.Load<SoundEffect>(@"Audio\deckGrab");
+        deckGrabShuffle = Game.Content.Load<SoundEffect>(@"Audio\deckGrabShuffle");
+        deckPlace = Game.Content.Load<SoundEffect>(@"Audio\deckPlace");
         streetShit = Game.Content.Load<Song>(@"Audio\Casino\street");
         bgm = Game.Content.Load<Song>(@"Audio\Casino\bgm");
+        for (int i = 0; i < 6; i++)
+        {
+            vo[i] = Game.Content.Load<SoundEffect>($@"Audio\Casino\vo{i}");
+            vo_win[i] = Game.Content.Load<SoundEffect>($@"Audio\Casino\vo{i}win");
+            vo_lose[i] = Game.Content.Load<SoundEffect>($@"Audio\Casino\vo{i}lose");
+        }
+        for (int i = 6; i < 15; i++)
+            vo[i] = Game.Content.Load<SoundEffect>($@"Audio\Casino\vo{i}");
         #endregion
 
         #region TextComponents
@@ -208,6 +231,22 @@ public class CasinoState : GameState
             await Task.Delay(17);
         }
         MediaPlayer.Play(streetShit);
+        
+        vo[0].Play();
+        ccText.Text = "Well, here we are, the casino.";
+        await Task.Delay(vo[0].Duration + TimeSpan.FromMilliseconds(500));
+        vo[1].Play();
+        ccText.Text = "Yes, it's an outdoor casino,\nstop complaining about everything.";
+        await Task.Delay(vo[1].Duration + TimeSpan.FromMilliseconds(500));
+        vo[2].Play();
+        ccText.Text = "Whatever, I'll go inside and\nsign us up for the tournament.";
+        await Task.Delay(vo[2].Duration);
+
+        // Electro20 anim
+
+        vo[3].Play();
+        ccText.Text = "Hey, check it out!";
+        await Task.Delay(vo[3].Duration);
 
         map.Animation.Start();
         while (map.Position.Y > 100f)
@@ -217,7 +256,12 @@ public class CasinoState : GameState
         }
         map.Animation.Paused = false;
 
-        await Task.Delay(5000); //DEBUG
+        vo[4].Play();
+        ccText.Text = "We've gotta play against each other in the first round.";
+        await Task.Delay(vo[4].Duration);
+
+        vo[5].Play();
+        ccText.Text = "I'm gonna win, of course.";
 
         while (map.Position.Y < 800f)
         {
@@ -225,6 +269,12 @@ public class CasinoState : GameState
             await Task.Delay(17);
         }
         map.Visible = false;
+
+        vo[6].Play();
+        ccText.Text = "Ohh, don't be sad, I'll give you 1% of the prize!";
+        await Task.Delay(vo[6].Duration);
+        vo[7].Play();
+        ccText.Text = "So, what are we waiting for, let's start!";
 
         while (table.Position.Y > 450)
         {
@@ -256,7 +306,8 @@ public class CasinoState : GameState
 
         MediaPlayer.Play(bgm);
         await Task.Delay(500);
-        ccText.Position = new Vector2(400f, 50f);
+        ccText.Text = "";
+        //ccText.Position = new Vector2(400f, 50f);
         StateMachineHandler();
     }
 
@@ -291,11 +342,15 @@ public class CasinoState : GameState
         if (!goldenCardImages[2].Visible)
         {
             if (sender is not null)
+            {
+                deckGrabShuffle.Play();
                 while (deck.Position.Y < 700)
                 {
                     deck.Position += new Vector2(9f, 10f);
                     await Task.Delay(17);
                 }
+                deckPlace.Play();
+            }
             
             deck.DrawOrder = 5;
             cardPlacerButtons[0].Enabled = true;
@@ -307,11 +362,13 @@ public class CasinoState : GameState
         deck.DrawOrder = 9;
 
         oscilatingOpacityImageReference = null;
+        deckGrab.Play();
         while (deck.Position.Y > 400)
         {
             deck.Position += new Vector2(-9f, -10f);
             await Task.Delay(17);
         }
+        deckPlace.Play();
 
         while (yourCardImages[0].Position.Y < 700)
         {
@@ -347,6 +404,7 @@ public class CasinoState : GameState
         (sender as Button).Enabled = false;
         (sender as Button).Image.Visible = false;
 
+        cardGrab.Play();
         if (index is 8)
         {
             while (deck.Position.Y > 700f)
@@ -393,16 +451,19 @@ public class CasinoState : GameState
             }
             yourCardImages[index/2].DrawOrder = 8;
         }
+        cardPlace.Play();
     }
 
     private async void ElectroHandOut()
     {
         deck.DrawOrder = 5;
+        deckGrabShuffle.Play();
         while (deck.Position.Y > 100)
         {
             deck.Position += new Vector2(9f, -10f);
             await Task.Delay(17);
         }
+        deckPlace.Play();
         while (deck.Position.Y < 108)
         {
             deck.Position += new Vector2(0f, 1f);
@@ -419,41 +480,58 @@ public class CasinoState : GameState
             yourCardImages[i].Visible = true;
             int oldPos = yourCardImages[i].DrawOrder;
             yourCardImages[i].DrawOrder = 9;
+            cardGrab.Play();
             while (yourCardImages[i].Position.Y < 550)
             {
                 yourCardImages[i].Position += new Vector2(3f * (i-1), 10f);
                 await Task.Delay(17);
             }
+            cardPlace.Play();
             yourCardImages[i].DrawOrder = oldPos;
             electroCardImages[i].Visible = true;
             oldPos = electroCardImages[i].DrawOrder;
             electroCardImages[i].DrawOrder = 9;
+            cardGrab.Play();
             while (electroCardImages[i].Position.Y < 250) {
                 electroCardImages[i].Position += new Vector2(9 * (i-1), 10f);
                 await Task.Delay(17);
             }
+            cardPlace.Play();
             electroCardImages[i].DrawOrder = oldPos;
         }
         for (int i = 0; i < 3; i++)
         {
             goldenCardImages[i].Visible = true;
+            cardGrab.Play();
             while (goldenCardImages[i].Position.Y < 400)
             {
                 goldenCardImages[i].Position += new Vector2(4.5f * (i-1), 10f);
                 await Task.Delay(17);
             }
+            cardPlace.Play();
         }
         deck.Position = new Vector2(400f, 100f);
-        if (handCount is not 8)
+        deck.Visible = true;
+        deck.DrawOrder = 9;
+        deckGrab.Play();
+        if (handCount is not 5)
         {
-            deck.Visible = true;
-            deck.DrawOrder = 9;
             while (deck.Position.Y < 400)
             {
                 deck.Position += new Vector2(-9f, 10f);
                 await Task.Delay(17);
             }
+            deckPlace.Play();
             deck.DrawOrder = 8;
+        }
+        else
+        {
+            while (deck.Position.Y > -70)
+            {
+                deck.Position += new Vector2(0, -10f);
+                await Task.Delay(17);
+            }
+            deck.Visible = false;
         }
 
         if (handCount != 3 && handCount != 5)
@@ -520,7 +598,7 @@ public class CasinoState : GameState
                 goto G;
             goldenCards[i] = g;
         }
-        if (handCount is 0) dejavuCards = yourCards;
+        if (handCount is 0) dejavuCards = yourCards.Clone() as CardData[];
     }
     
     private void CheatedCreateCards()
@@ -557,11 +635,11 @@ public class CasinoState : GameState
         electroCards = new CardData[3];
         for (int i = 0; i < 3; i++)
         {
-            int value = 13;
+            int value = i is 1 && handCount is 5 ? 2 : 13;
             E:
             if (goldenCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit) || yourCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit) || electroCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit))
             {
-                value--;
+                if (i is 1 && handCount is 5) value++; else value--;
                 goto E;
             }
             electroCards[i] = new CardData(value, goldenCards[i].Suit, false);
@@ -580,14 +658,21 @@ public class CasinoState : GameState
         electroCards = electroCards.OrderBy(x => x.Value).ToArray();
     }
 
-    private void PlayCard(object sender, EventArgs e)
+    private async void PlayCard(object sender, EventArgs e)
     {
         yourCardButtons[0].Enabled = false;
         yourCardButtons[1].Enabled = false;
         yourCardButtons[2].Enabled = false;
         yourPlayedCard = yourCardButtons.ToList().IndexOf(sender as Button);
         yourCards[yourPlayedCard].Used = true;
-        yourCardImages[yourPlayedCard].Position = new Vector2(265 + 135 * roundCount, 550f);
+
+        cardGrab.Play();
+        while (yourCardImages[yourPlayedCard].Position.Y > 550f)
+        {
+            yourCardImages[yourPlayedCard].Position += new Vector2(9f * (roundCount - yourPlayedCard), -10f);
+            await Task.Delay(17);
+        }
+        cardPlace.Play();
 
         if (electroPlayedCard is -1)
             ElectroPlayCard();
@@ -595,14 +680,22 @@ public class CasinoState : GameState
             EvaluateRound();
     }
 
-    private void ElectroPlayCard()
+    private async void ElectroPlayCard()
     {
         electroPlayedCard = Array.IndexOf(electroCards, electroCards.FirstOrDefault((x => x.Suit == goldenCards[roundCount].Suit && !x.Used), electroCards.First(x => !x.Used)));
         electroCards[electroPlayedCard].IsFaceUp = true;
         electroCardImages[electroPlayedCard].ChangeAnimatedTexture(electroCards[electroPlayedCard].GetTexture().Key, electroCards[electroPlayedCard].GetTexture().Value);
-        electroCardImages[electroPlayedCard].Position = new Vector2(265 + 135 * roundCount, 250f);
+        electroCardImages[electroPlayedCard].Position = new Vector2(400f, 100f);
         electroCardImages[electroPlayedCard].Visible = true;
         electroCards[electroPlayedCard].Used = true;
+        
+        cardGrab.Play();
+        while (electroCardImages[electroPlayedCard].Position.Y < 250f)
+        {
+            electroCardImages[electroPlayedCard].Position += new Vector2(9f * (roundCount - 1), 10f);
+            await Task.Delay(17);
+        }
+        cardPlace.Play();
 
         if (yourPlayedCard is -1)
         {
@@ -616,8 +709,11 @@ public class CasinoState : GameState
 
     private void EvaluateRound()
     {
-        if (yourCards[yourPlayedCard].Value == electroCards[electroPlayedCard].Value)
+        if (yourCards[yourPlayedCard].Value == electroCards[electroPlayedCard].Value && yourCards[yourPlayedCard].Suit != goldenCards[roundCount].Suit && electroCards[electroPlayedCard].Suit != goldenCards[roundCount].Suit)
+        {
             HandleScore(handCount % 2 == 1);
+            return;
+        }    
 
         int yourValue = yourCards[yourPlayedCard].Points + (yourCards[yourPlayedCard].Suit == goldenCards[roundCount].Suit ? 100 : 0);
         int electroValue = electroCards[electroPlayedCard].Points + (electroCards[electroPlayedCard].Suit == goldenCards[roundCount].Suit ? 100 : 0);
@@ -720,16 +816,20 @@ public class CasinoState : GameState
         if (youWon)
         {
             vo_lose[handCount].Play();
+            ccText.Text = cc_lose[handCount];
             await Task.Delay(vo_lose[handCount].Duration);
         }
         else 
         {
             vo_win[handCount].Play();
+            ccText.Text = cc_win[handCount];
             await Task.Delay(vo_win[handCount].Duration);
         }
+        ccText.Text = "";
 
         if (handCount is 5)
         {
+            OutroSequence();
             return;
         }
 
@@ -779,5 +879,10 @@ public class CasinoState : GameState
         yourPlayedCard = -1;
         electroPlayedCard = -1;
         roundCount = 0;
+    }
+
+    private void OutroSequence()
+    {
+
     }
 }
