@@ -26,7 +26,7 @@ public class MenuState : GameState
     private SoundEffect click;
     private SoundEffect error;
     private SoundEffect impact;
-    private SoundEffect[] vo = new SoundEffect[6];
+    private SoundEffect[] vo = new SoundEffect[7];
     /*
     00: "Welcome to LA PODRIDA 2,"
     01: "the long awaited sequel to the hit game LA PODRIDA 1."

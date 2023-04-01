@@ -13,17 +13,29 @@ namespace LaPodrida2;
 
 public class CasinoState : GameState
 {
+    #region Fields
     private Texture2D back;
     private Texture2D angry;
+    private Texture2D cry;
+    private Texture2D idle;
+    private Texture2D inverted;
     private Texture2D laugh;
+    private Texture2D monocle;
     private Texture2D musculito;
+    private Texture2D nervous;
     private Texture2D sus;
+    private Texture2D t;
     private SimpleImage bg;
     private SimpleImage table;
     private SimpleImage deck;
     private SimpleImage map;
     private SimpleImage gameBg;
     private SimpleImage electro20;
+    private SimpleImage yourPaper;
+    private SimpleImage electroPaper;
+    private SimpleImage chorizo;
+    private SimpleImage circle;
+    private SimpleImage exploeffect;
     private TextComponent ccText;
     private CardData[] electroCards;
     private SimpleImage[] electroCardImages = new SimpleImage[3];
@@ -36,12 +48,15 @@ public class CasinoState : GameState
     private int electroPlayedCard = -1;
     private int yourPoints = 0;
     private int electroPoints = 0;
+    private TextComponent yourPointsLabel;
+    private TextComponent electroPointsLabel;
     private bool yourRounds = false;
     private bool electroRounds = false;
     private int roundCount = 0;
     private int handCount = 0;
     private Song streetShit;
     private Song bgm;
+    private Song conflict;
     private Button[] yourCardButtons = new Button[3];
     private Button deckButton;
     private Button[] cardPlacerButtons = new Button[9];
@@ -56,7 +71,7 @@ public class CasinoState : GameState
     private SoundEffect deckGrab;
     private SoundEffect deckGrabShuffle;
     private SoundEffect deckPlace;
-    // References set below vo, vo_win and vo_lose are for the corresponding ccText.Text strings per index
+    private SoundEffect explosion;
     private SoundEffect[] vo = new SoundEffect[15];
     /*
     00: "Well, here we are, the casino."
@@ -73,18 +88,19 @@ public class CasinoState : GameState
     11: "Woah, where did that come from?"
     12: "WAIT, I'M NOT CHEATING, I SWEAR!"
     13: "NO, CHORIZO NO!"
-    14: "OK, I ADMIT IT, I CHEATED, I CHEATED, STOP, PLEASE!"
+    14: "OK, I ADMIT IT, I CHEATED,\nI CHEATED, STOP, PLEASE!"
     */
     private SoundEffect[] vo_win = new SoundEffect[6];
     private string[] cc_win = new string[6]
     {   
         "Off to a good start, I have the advantage.",
         "Hahaha, aperently you're unable to defeat an arduino!",
-        "If I won a dolar each time I beat someone like you,\nI'd be a billionaire right now.",
+        "If I won a dolar each time I beat someone like you,\nI would be a billionaire right now.",
         "That was sweet, thank you random number generator!",
         "Who's laughing now?",
         "Dude, did you see my cards?! That was amazing!"
     };
+    private Texture2D[] texture_win = new Texture2D[6];
     private SoundEffect[] vo_lose = new SoundEffect[6];
     private string[] cc_lose = new string[6]
     {
@@ -93,8 +109,10 @@ public class CasinoState : GameState
         "Segment Fault (Core Dumped)",
         "Wha- Well you're lucky... Medibot failed...",
         "Once this match is over, you're gonna be working for me!",
-        "HOW DID YOU GET THAT?! I WAS SUPPOSED TO WIN THAT!!!"
+        "HOW DID YOU GET THAT?!\nI WAS SUPPOSED TO WIN THAT!!!"
     };
+    private Texture2D[] texture_lose = new Texture2D[6];
+    #endregion
 
     public CasinoState(Game game) : base(game) {}
 
@@ -103,14 +121,49 @@ public class CasinoState : GameState
         #region Textures
         back = Game.Content.Load<Texture2D>(@"Textures\Cards\back_red");
         CardData.LoadTextures(Game.Content, true);
+
+        angry = Game.Content.Load<Texture2D>(@"Textures\Electro20\angry");
+        cry = Game.Content.Load<Texture2D>(@"Textures\Electro20\cry");
+        idle = Game.Content.Load<Texture2D>(@"Textures\Electro20\idle");
+        inverted = Game.Content.Load<Texture2D>(@"Textures\Electro20\inverted");
+        laugh = Game.Content.Load<Texture2D>(@"Textures\Electro20\laugh");
+        monocle = Game.Content.Load<Texture2D>(@"Textures\Electro20\monocle");
+        musculito = Game.Content.Load<Texture2D>(@"Textures\Electro20\musculito");
+        nervous = Game.Content.Load<Texture2D>(@"Textures\Electro20\nervous");
+        sus = Game.Content.Load<Texture2D>(@"Textures\Electro20\sus");
+        t = Game.Content.Load<Texture2D>(@"Textures\Electro20\t");
+
+        texture_win[0] = monocle;
+        texture_win[1] = laugh;
+        texture_win[2] = monocle;
+        texture_win[3] = musculito;
+        texture_win[4] = laugh;
+        texture_win[5] = angry;
+
+        texture_lose[0] = monocle;
+        texture_lose[1] = t;
+        texture_lose[2] = t;
+        texture_lose[3] = inverted;
+        texture_lose[4] = angry;
+        texture_lose[5] = cry;
         #endregion
 
         #region SimpleImages
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
-        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\Table"), new Vector2(400f, 800f), 0, anchor: Alignment.TopCenter);
+        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\Table"), new Vector2(400f, 800f), 2, anchor: Alignment.TopCenter);
         deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_red"), new Vector2(400f, -200f), 8);
-        gameBg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\gameBg"), Vector2.Zero, 1, anchor: Alignment.TopLeft, visible: false, /*animation: Animation<Rectangle>.TextureAnimation(new Point(800, 800), new Point(1600, 800), true, 30),*/ opacity: 0f);
-        map = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\map"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft, visible: true, animation: Animation<Rectangle>.TextureAnimation(new Point(800, 600), new Point(800, 1200), true, 30));
+        gameBg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\gameBg"), Vector2.Zero, 3, anchor: Alignment.TopLeft, visible: false, /*animation: Animation<Rectangle>.TextureAnimation(new Point(800, 800), new Point(1600, 800), true, 30),*/ opacity: 0f);
+        map = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\map"), new Vector2(0f, 800f), 2, anchor: Alignment.TopLeft, visible: true, animation: Animation<Rectangle>.TextureAnimation(new Point(800, 600), new Point(800, 1200), true, 30));
+        electro20 = new SimpleImage(Game, idle, new Vector2(400f, 1300f), 1, animation: Animation<Rectangle>.TextureAnimation(new Point(500), new Point(1000, 500), true, 30));
+        yourPaper = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\paper"), new Vector2(670f, 650f), 2, visible: false);
+        electroPaper = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\paper"), new Vector2(670f, 150f), 2, visible: false);
+        chorizo = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\chorizo"), new Vector2(800f, 360f), 2, anchor: Alignment.CenterLeft, visible: false);
+        circle = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\circle"), new Vector2(130f, 400f), 9, visible: false);
+        exploeffect = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\explosion"), new Vector2(400f, 400f), 10, visible: false, scale: 3f, animation: Animation<Rectangle>.TextureAnimation(new Point(200, 282), new Point(3600, 282), false, 1));
+        plus1 = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\plus"), new Vector2(333f, 400f), 10, visible: false, scale: .5f, color: Color.Black, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30));
+        plus2 = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\plus"), new Vector2(467f, 400f), 10, visible: false, scale: .5f, color: Color.Black, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30));
+        equal = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\equals"), new Vector2(602f, 400f), 10, visible: false, scale: .5f, color: Color.Black, animation: Animation<Rectangle>.TextureAnimation(new Point(135), new Point(270, 135), true, 30));
+
         map.Animation.Paused = true;
         for (int i = 0; i < 3; i++)
         {
@@ -127,6 +180,15 @@ public class CasinoState : GameState
         _components.Add(deck);
         _components.Add(gameBg);
         _components.Add(map);
+        _components.Add(electro20);
+        _components.Add(yourPaper);
+        _components.Add(electroPaper);
+        _components.Add(chorizo);
+        _components.Add(circle);
+        _components.Add(exploeffect);
+        _components.Add(plus1);
+        _components.Add(plus2);
+        _components.Add(equal);
         #endregion
 
         #region Buttons
@@ -147,12 +209,6 @@ public class CasinoState : GameState
             _components.Add(cardPlacerButtons[i+1]);
             _components.Add(cardPlacerButtons[i/2 + 6]);
         }
-        plus1 = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\plus"), new Vector2(333f, 400f), 10, visible: false, scale: .5f, color: Color.Black, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30));
-        plus2 = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Menu\plus"), new Vector2(467f, 400f), 10, visible: false, scale: .5f, color: Color.Black, animation: Animation<Rectangle>.TextureAnimation(new Point(100), new Point(100, 200), true, 30));
-        equal = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Casino\equals"), new Vector2(602f, 400f), 10, visible: false, scale: .5f, animation: Animation<Rectangle>.TextureAnimation(new Point(135), new Point(270, 135), true, 30));
-        _components.Add(plus1);
-        _components.Add(plus2);
-        _components.Add(equal);
         #endregion
 
         #region Audios
@@ -161,8 +217,10 @@ public class CasinoState : GameState
         deckGrab = Game.Content.Load<SoundEffect>(@"Audio\deckGrab");
         deckGrabShuffle = Game.Content.Load<SoundEffect>(@"Audio\deckGrabShuffle");
         deckPlace = Game.Content.Load<SoundEffect>(@"Audio\deckPlace");
+        explosion = Game.Content.Load<SoundEffect>(@"Audio\Casino\explosion");
         streetShit = Game.Content.Load<Song>(@"Audio\Casino\street");
         bgm = Game.Content.Load<Song>(@"Audio\Casino\bgm");
+        conflict = Game.Content.Load<Song>(@"Audio\Casino\conflict");
         for (int i = 0; i < 6; i++)
         {
             vo[i] = Game.Content.Load<SoundEffect>($@"Audio\Casino\vo{i}");
@@ -176,15 +234,70 @@ public class CasinoState : GameState
         #region TextComponents
         roundResult = new TextComponent(Game, Game.Content.Load<SpriteFont>(@"Other\romanAlexander"), "", new Vector2(670f, 400f), 10, anchor: Alignment.Center, color: Color.Black, visible: false);
         ccText = new TextComponent(Game, Game.Content.Load<SpriteFont>(@"Other\consolas"), "", new Vector2(400f, 750f), 10, anchor: Alignment.Center);
+        yourPointsLabel = new TextComponent(Game, Game.Content.Load<SpriteFont>(@"Other\romanAlexander"), "0", new Vector2(670f, 650f), 2, anchor: Alignment.Center, color: Color.Black, visible: false);
+        electroPointsLabel = new TextComponent(Game, Game.Content.Load<SpriteFont>(@"Other\romanAlexander"), "0", new Vector2(670f, 150f), 2, anchor: Alignment.Center, color: Color.Black, visible: false);
         _components.Add(roundResult);
         _components.Add(ccText);
+        _components.Add(yourPointsLabel);
+        _components.Add(electroPointsLabel);
         #endregion
     }
 
     public override void UnloadContent()
     {
-        // LA PODRIDAAAAAAAAAAAAAAAAA (2)
-        throw new NotImplementedException();
+        #region Textures
+        Game.Content.UnloadAsset(@"Textures\Cards\back_red");
+        CardData.UnloadTextures(Game.Content);
+        Game.Content.UnloadAsset(@"Textures\Electro20\angry");
+        Game.Content.UnloadAsset(@"Textures\Electro20\cry");
+        Game.Content.UnloadAsset(@"Textures\Electro20\idle");
+        Game.Content.UnloadAsset(@"Textures\Electro20\inverted");
+        Game.Content.UnloadAsset(@"Textures\Electro20\laugh");
+        Game.Content.UnloadAsset(@"Textures\Electro20\monocle");
+        Game.Content.UnloadAsset(@"Textures\Electro20\musculito");
+        Game.Content.UnloadAsset(@"Textures\Electro20\nervous");
+        Game.Content.UnloadAsset(@"Textures\Electro20\sus");
+        Game.Content.UnloadAsset(@"Textures\Electro20\t");
+        #endregion
+    
+        #region SimpleImages
+        Game.Content.UnloadAsset(@"Textures\Casino\bg");
+        Game.Content.UnloadAsset(@"Textures\Casino\Table");
+        Game.Content.UnloadAsset(@"Textures\Casino\deck_red");
+        Game.Content.UnloadAsset(@"Textures\Casino\gameBg");
+        Game.Content.UnloadAsset(@"Textures\Casino\map");
+        Game.Content.UnloadAsset(@"Textures\Casino\paper");
+        Game.Content.UnloadAsset(@"Textures\Casino\chorizo");
+        Game.Content.UnloadAsset(@"Textures\Casino\circle");
+        Game.Content.UnloadAsset(@"Textures\Casino\explosion");
+        Game.Content.UnloadAsset(@"Textures\Menu\plus");
+        Game.Content.UnloadAsset(@"Textures\Casino\equals");
+        #endregion
+        
+        #region Audios
+        Game.Content.UnloadAsset(@"Audio\cardGrab");
+        Game.Content.UnloadAsset(@"Audio\cardPlace");
+        Game.Content.UnloadAsset(@"Audio\deckGrab");
+        Game.Content.UnloadAsset(@"Audio\deckGrabShuffle");
+        Game.Content.UnloadAsset(@"Audio\deckPlace");
+        Game.Content.UnloadAsset(@"Audio\Casino\explosion");
+        Game.Content.UnloadAsset(@"Audio\Casino\street");
+        Game.Content.UnloadAsset(@"Audio\Casino\bgm");
+        Game.Content.UnloadAsset(@"Audio\Casino\conflict");
+        for (int i = 0; i < 6; i++)
+        {
+            Game.Content.UnloadAsset($@"Audio\Casino\vo{i}");
+            Game.Content.UnloadAsset($@"Audio\Casino\vo{i}win");
+            Game.Content.UnloadAsset($@"Audio\Casino\vo{i}lose");
+        }
+        for (int i = 6; i < 15; i++)
+            Game.Content.UnloadAsset($@"Audio\Casino\vo{i}");
+        #endregion
+    
+        #region TextComponents
+        Game.Content.UnloadAsset(@"Other\romanAlexander");
+        Game.Content.UnloadAsset(@"Other\consolas");
+        #endregion
     }
 
     public override void Initialize()
@@ -200,6 +313,20 @@ public class CasinoState : GameState
             b.LeftClicked += PlaceCard;
         }
         IntroSequence();
+    }
+
+    public override void Dispose()
+    {
+        MediaPlayer.Stop();
+        yourCardButtons[0].LeftClicked -= PlayCard;
+        yourCardButtons[1].LeftClicked -= PlayCard;
+        yourCardButtons[2].LeftClicked -= PlayCard;
+        deckButton.LeftClicked -= Decker;
+        foreach (Button b in cardPlacerButtons)
+        {
+            b.LeftClicked -= PlaceCard;
+        }
+        base.Dispose();
     }
 
     public override void Update(GameTime gameTime)
@@ -220,6 +347,9 @@ public class CasinoState : GameState
             }
         }
 
+        if (chorizo is not null && chorizo.Visible)
+            chorizo.Position += new Vector2(-1f, 0f);
+
         base.Update(gameTime);
     }
 
@@ -228,24 +358,39 @@ public class CasinoState : GameState
         while (bg.Position.Y > 0)
         {
             bg.Position += new Vector2(0f, -5f);
+            electro20.Position += new Vector2(0f, -5f);
             await Task.Delay(17);
         }
         MediaPlayer.Play(streetShit);
-        
         vo[0].Play();
         ccText.Text = "Well, here we are, the casino.";
         await Task.Delay(vo[0].Duration + TimeSpan.FromMilliseconds(500));
         vo[1].Play();
+        Game.Window.Title = "La Podrida 2 - Casino";
         ccText.Text = "Yes, it's an outdoor casino,\nstop complaining about everything.";
+        electro20.ChangeAnimatedTexture(sus, null);
         await Task.Delay(vo[1].Duration + TimeSpan.FromMilliseconds(500));
         vo[2].Play();
         ccText.Text = "Whatever, I'll go inside and\nsign us up for the tournament.";
+        electro20.ChangeAnimatedTexture(idle, null);
         await Task.Delay(vo[2].Duration);
 
-        // Electro20 anim
+        while (electro20.Scale > 0f)
+        {
+            electro20.Scale -= 0.05f;
+            await Task.Delay(17);
+        }
+        await Task.Delay(1000);
+        while (electro20.Scale < 1f)
+        {
+            electro20.Scale += 0.05f;
+            await Task.Delay(17);
+        }
+        electro20.Scale = 1f;
 
         vo[3].Play();
         ccText.Text = "Hey, check it out!";
+        electro20.ChangeAnimatedTexture(musculito, null);
         await Task.Delay(vo[3].Duration);
 
         map.Animation.Start();
@@ -262,6 +407,7 @@ public class CasinoState : GameState
 
         vo[5].Play();
         ccText.Text = "I'm gonna win, of course.";
+        electro20.ChangeAnimatedTexture(laugh, null);
 
         while (map.Position.Y < 800f)
         {
@@ -272,13 +418,16 @@ public class CasinoState : GameState
 
         vo[6].Play();
         ccText.Text = "Ohh, don't be sad, I'll give you 1% of the prize!";
+        electro20.ChangeAnimatedTexture(monocle, null);
         await Task.Delay(vo[6].Duration);
         vo[7].Play();
         ccText.Text = "So, what are we waiting for, let's start!";
+        electro20.ChangeAnimatedTexture(musculito, null);
 
         while (table.Position.Y > 450)
         {
             table.Position += new Vector2(0f, -5f);
+            electro20.Position += new Vector2(0f, -2f);
             await Task.Delay(17);
         }
 
@@ -302,6 +451,7 @@ public class CasinoState : GameState
         }
         bg.Visible = false;
         table.Visible = false;
+        electro20.Visible = false;
         deck.Position = new Vector2(400f, 708f);
 
         MediaPlayer.Play(bgm);
@@ -330,8 +480,12 @@ public class CasinoState : GameState
             electroCardImages[i].Position = new Vector2(400f, 700f);
             goldenCardImages[i].Position = new Vector2(400f, 700f);
         }
-        deckButton.Enabled = true;
-        //oscilatingOpacityImageReference = deckButton.Image;
+        if (handCount is not 0)
+        {
+            deckButton.Enabled = true;
+            circle.Visible = true;
+            oscilatingOpacityImageReference = circle;
+        }
         CreateCards();
     }
 
@@ -339,6 +493,7 @@ public class CasinoState : GameState
     {
         deckButton.Enabled = false;
         deckButton.Image.Visible = false;
+        circle.Visible = false;
         if (!goldenCardImages[2].Visible)
         {
             if (sender is not null)
@@ -636,13 +791,14 @@ public class CasinoState : GameState
         for (int i = 0; i < 3; i++)
         {
             int value = i is 1 && handCount is 5 ? 2 : 13;
+            CardData.Suits suit = i is 1 && handCount is 5 ? (CardData.Suits)Random.Shared.Next(0, 4) : goldenCards[i].Suit;
             E:
-            if (goldenCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit) || yourCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit) || electroCards.Any(x => x.Value == value && x.Suit == goldenCards[i].Suit))
+            if (goldenCards.Any(x => x.Value == value && x.Suit == suit) || yourCards.Any(x => x.Value == value && x.Suit == suit) || electroCards.Any(x => x.Value == value && x.Suit == suit))
             {
                 if (i is 1 && handCount is 5) value++; else value--;
                 goto E;
             }
-            electroCards[i] = new CardData(value, goldenCards[i].Suit, false);
+            electroCards[i] = new CardData(value, suit, false);
         }
         if (handCount is not 5)
         {
@@ -776,9 +932,15 @@ public class CasinoState : GameState
 
         bg.Visible = true;
         table.Visible = true;
+        yourPaper.Visible = true;
+        electroPaper.Visible = true;
+        yourPointsLabel.Visible = true;
+        electroPointsLabel.Visible = true;
+        electro20.Visible = true;
+        electro20.ChangeAnimatedTexture(idle, null);
         while (gameBg.Opacity > 0f)
         {
-            if (roundResult.Position.Y != 400f - 250 * (youWon ? 1 : -1))
+            if (roundResult.Position.Y != 400f + 250f * (youWon ? 1 : -1))
                 roundResult.Position += new Vector2(0f, 5f * (youWon ? 1 : -1));
 
             gameBg.Opacity -= 0.02f;
@@ -812,17 +974,23 @@ public class CasinoState : GameState
         plus1.Visible = false;
         plus2.Visible = false;
         equal.Visible = false;
+        roundResult.Visible = false;
+
+        yourPointsLabel.Text = yourPoints.ToString();
+        electroPointsLabel.Text = electroPoints.ToString();
 
         if (youWon)
         {
             vo_lose[handCount].Play();
             ccText.Text = cc_lose[handCount];
+            electro20.ChangeAnimatedTexture(texture_lose[handCount], null);
             await Task.Delay(vo_lose[handCount].Duration);
         }
         else 
         {
             vo_win[handCount].Play();
             ccText.Text = cc_win[handCount];
+            electro20.ChangeAnimatedTexture(texture_win[handCount], null);
             await Task.Delay(vo_win[handCount].Duration);
         }
         ccText.Text = "";
@@ -845,6 +1013,11 @@ public class CasinoState : GameState
         }
         bg.Visible = false;
         table.Visible = false;
+        electro20.Visible = false;
+        yourPaper.Visible = false;
+        electroPaper.Visible = false;
+        yourPointsLabel.Visible = false;
+        electroPointsLabel.Visible = false;
         StateMachineHandler();
     }
 
@@ -881,8 +1054,116 @@ public class CasinoState : GameState
         roundCount = 0;
     }
 
-    private void OutroSequence()
+    private async void OutroSequence()
     {
+        vo[8].Play();
+        ccText.Text = "Come on, hand out the last round...";
+        electro20.ChangeAnimatedTexture(laugh, null);
+        await Task.Delay(vo[8].Duration);
+        ccText.Text = "";
+        gameBg.Visible = true;
+        while (gameBg.Opacity < 1f)
+        {
+            gameBg.Opacity += 0.02f;
+            await Task.Delay(17);
+        }
+        circle.Visible = true;
+        oscilatingOpacityImageReference = circle;
+        yourPaper.Visible = false;
+        electroPaper.Visible = false;
+        yourPointsLabel.Visible = false;
+        electroPointsLabel.Visible = false;
 
+        await Task.Delay(1500);
+        MediaPlayer.Stop();
+        await Task.Delay(1500);
+
+        vo[9].Play();
+        ccText.Text = "Where did the deck go?";
+        electro20.ChangeAnimatedTexture(sus, null);
+        await Task.Delay(vo[9].Duration);
+        ccText.Text = "";
+        circle.Visible = false;
+        oscilatingOpacityImageReference = null;
+
+        while (gameBg.Opacity > 0f)
+        {
+            gameBg.Opacity -= 0.02f;
+            await Task.Delay(17);
+        }
+
+        await Task.Delay(1000);
+
+        MediaPlayer.Play(conflict);
+        vo[10].Play();
+        ccText.Text = "Don't look at me, I didn't take it!";
+        electro20.ChangeAnimatedTexture(angry, null);
+        await Task.Delay(vo[10].Duration);
+
+        electroCardImages[0].ChangeTexture(back);
+        electroCardImages[0].Position = new Vector2(360f, 400f);
+        electroCardImages[0].Opacity = 1f;
+        electroCardImages[0].Visible = true;
+        cardGrab.Play();
+        while (electroCardImages[0].Position.Y < 500f)
+        {
+            electroCardImages[0].Position += new Vector2(0f, 10f);
+            await Task.Delay(17);
+        }
+
+        await Task.Delay(500);
+
+        vo[11].Play();
+        ccText.Text = "Woah, where did that come from?";
+        electro20.ChangeAnimatedTexture(sus, null);
+        await Task.Delay(vo[11].Duration + TimeSpan.FromMilliseconds(500));
+
+        vo[12].Play();
+        ccText.Text = "WAIT, I'M NOT CHEATING, I SWEAR!";
+        electro20.ChangeAnimatedTexture(nervous, null);
+        await Task.Delay(vo[12].Duration);
+
+        deck.Position = new Vector2(440f, 400f);
+        deck.Opacity = 1f;
+        deck.Visible = true;
+        deckGrabShuffle.Play();
+        electro20.ChangeAnimatedTexture(inverted, null);
+        while (deck.Position.Y < 500f)
+        {
+            deck.Position += new Vector2(0f, 20f);
+            await Task.Delay(17);
+        }
+
+        await Task.Delay(1000);
+
+        chorizo.Visible = true;
+
+        while (chorizo.Position.X > 700)
+        {
+            await Task.Delay(17);
+        }
+
+        vo[13].Play();
+        ccText.Text = "NO, CHORIZO NO!";
+        electro20.ChangeAnimatedTexture(nervous, null);
+        await Task.Delay(vo[13].Duration);
+        
+        vo[14].Play();
+        ccText.Text = "OK, I ADMIT IT, I CHEATED, I CHEATED, STOP, PLEASE!";
+        electro20.ChangeAnimatedTexture(cry, null);
+
+        while (chorizo.Position.X > electro20.Position.X)
+        {
+            electro20.Position += new Vector2(-0.5f, 0f);
+            await Task.Delay(17);
+        }
+
+        explosion.Play();
+        exploeffect.Animation.Start();
+        exploeffect.Visible = true;
+
+        await Task.Delay(289);
+
+        SwitchState(new CreditsState(Game));
     }
 }

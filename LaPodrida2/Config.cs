@@ -38,7 +38,7 @@ public static class Configs
         } catch
         {
             fileStream = File.Create(file);
-            /* 0 */ MusicVolume = 10;
+            /* 0 */ MusicVolume = 5;
             /* 1 */ SfxVolume = 10;
             return;
         }

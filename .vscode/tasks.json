@@ -21,7 +21,10 @@
                 "publish",
                 "${workspaceFolder}/LaPodrida2/LaPodrida2.csproj",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary",
+                "/p:PublishReadyToRun=false",
+                "/p:TieredCompilation=false",
+                "--self-contained"
             ],
             "problemMatcher": "$msCompile"
         },

@@ -74,4 +74,11 @@ public struct CardData
         foreach (var frame in animation)
             animations.Add(new Animation<Rectangle>(new[] { frame }, false, 1));
     }
+    public static void UnloadTextures(ContentManager content)
+    {
+        animations.Clear();
+        foreach (var texture in textures.Values)
+            content.UnloadAsset(texture.Name);
+        textures.Clear();
+    }
 }
