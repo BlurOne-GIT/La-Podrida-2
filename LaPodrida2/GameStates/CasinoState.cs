@@ -1134,7 +1134,7 @@ public class CasinoState : GameState
             await Task.Delay(17);
         }
 
-        await Task.Delay(1000);
+        await Task.Delay(3000);
 
         chorizo.Visible = true;
 
@@ -1149,7 +1149,7 @@ public class CasinoState : GameState
         await Task.Delay(vo[13].Duration);
         
         vo[14].Play();
-        ccText.Text = "OK, I ADMIT IT, I CHEATED, I CHEATED, STOP, PLEASE!";
+        ccText.Text = "OK, I ADMIT IT, I CHEATED,\nI CHEATED, STOP, PLEASE!";
         electro20.ChangeAnimatedTexture(cry, null);
 
         while (chorizo.Position.X > electro20.Position.X)

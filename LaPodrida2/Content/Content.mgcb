@@ -789,6 +789,18 @@
 /processorParam:TextureFormat=Color
 /build:Textures/Casino/Table.png
 
+#begin Textures/Credits/electro20.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Textures/Credits/electro20.png
+
 #begin Textures/Credits/splash.png
 /importer:TextureImporter
 /processor:TextureProcessor
