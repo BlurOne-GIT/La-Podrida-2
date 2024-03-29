@@ -28,6 +28,7 @@ public class CreditsState : GameState
         MediaPlayer.Play(bgm);
         MediaPlayer.IsRepeating = false;
         MediaPlayer.MediaStateChanged += TheLastJoke;
+        Game.Window.Title = "La Podrida 2 - Credits";
     }
 
     public override void Dispose()
@@ -44,6 +45,7 @@ public class CreditsState : GameState
         MediaPlayer.Play(pokemongo);
         (_components[0] as SimpleImage).ChangeTexture(electro20);
         MediaPlayer.MediaStateChanged += TheLastJoke;
+        Game.Window.Title = "I Play Pokemon Go - Electro 20 Cover";
     }
 
     public override void UnloadContent()

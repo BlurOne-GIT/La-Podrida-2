@@ -96,7 +96,7 @@ public class TutorialState : GameState
 
         #region SimpleImages
         bg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\bg"), new Vector2(0f, 800f), 0, anchor: Alignment.TopLeft);
-        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\table"), new Vector2(400f, 800f), 2, anchor: Alignment.TopCenter, scale: 1.2f);
+        table = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\Table"), new Vector2(400f, 800f), 2, anchor: Alignment.TopCenter, scale: 1.2f);
         deck = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Cards\deck_blue"), new Vector2(400f, -200f), 8);
         tutoBg = new SimpleImage(Game, Game.Content.Load<Texture2D>(@"Textures\Tutorial\tablebg"), Vector2.Zero, 3, anchor: Alignment.TopLeft, visible: false, animation: Animation<Rectangle>.TextureAnimation(new Point(800, 800), new Point(1600, 800), true, 30), opacity: 0f);
         electro20 = new SimpleImage(Game, idle, new Vector2(400f, 1300f), 1, animation: Animation<Rectangle>.TextureAnimation(new Point(500), new Point(1000, 500), true, 30));
